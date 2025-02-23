@@ -1,4 +1,4 @@
--- Cruz Urbina
+-- Cruz Urbina, Christian Kurdi
 -- Database Design
 
 -- DROP TABLE equipment;
