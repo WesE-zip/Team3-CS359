@@ -1,0 +1,3 @@
+Christian:
+Leader for this stage.
+Created member, membershipPlan, payment tables and tuples.
