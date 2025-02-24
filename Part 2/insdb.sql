@@ -89,8 +89,8 @@ VALUES
 --INSERT CLASS DATA
 INSERT INTO   class (classId, className, classType, duration, classCapacity, instrucotorId, gymID)
 VALUES
-  (1, 'HIIT with Hunt', 'HIIT', 20, 5, 1, 1),
-  (2, 'HIIT with Elliot', 'HIIT', 20, 5, 4, 2),
-  (3, 'Weights with Nate', 'Weights', 20, 5, 5, 2),
-  (4, 'Zumba with Hardison', 'Zumba', 20, 5, 3, 2),
-  (5, 'Yoga with Parker', 'Yoga', 5, 5, 2, 2);
+  (1, 'HIIT with Hunt', 'HIIT', 20, 5, 1, 2),
+  (2, 'HIIT with Elliot', 'HIIT', 20, 5, 4, 4),
+  (3, 'Weights with Nate', 'Weights', 20, 5, 5, 4),
+  (4, 'Zumba with Hardison', 'Zumba', 20, 5, 3, 4),
+  (5, 'Yoga with Parker', 'Yoga', 5, 5, 2, 4);
