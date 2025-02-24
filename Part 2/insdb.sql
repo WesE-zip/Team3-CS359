@@ -77,5 +77,20 @@ VALUES
   (3, 2, DATE('now')),
   (1, 3, DATE('now'));
 
-  
-  
+--INSERT INSTRUCTOR DATA
+INSERT INTO Instructor (instructorId, name, specialty, phone, email)
+VALUES
+  (1, 'Ethan Hunt', 'HIIT', '(888)789-1245','E.Hunt.instructor@XYZgym.com'),
+  (2, 'Parker', 'Yoga', '(888)789-4513','Parker.instructor@XYZgym.com'),
+  (3, 'Hardison', 'Zumba', '(888)789-4514','Hardison.instructor@XYZgym.com'),
+  (4, 'Elliot', 'HIIT', '(888)789-4515','Elliot.instructor@XYZgym.com'),
+  (5, 'Nate', 'Weights', '(888)789-4516','Nate.instructor@XYZgym.com');
+
+--INSERT CLASS DATA
+INSERT INTO   class (classId, className, classType, duration, classCapacity, instrucotorId, gymID)
+VALUES
+  (1, 'HIIT with Hunt', 'HIIT', 20, 5, 1, 1),
+  (2, 'HIIT with Elliot', 'HIIT', 20, 5, 4, 2),
+  (3, 'Weights with Nate', 'Weights', 20, 5, 5, 2),
+  (4, 'Zumba with Hardison', 'Zumba', 20, 5, 3, 2),
+  (5, 'Yoga with Parker', 'Yoga', 5, 5, 2, 2);
