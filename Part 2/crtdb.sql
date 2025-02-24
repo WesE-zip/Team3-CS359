@@ -1,4 +1,4 @@
--- Cruz Urbina, Christian Kurdi
+-- Cruz Urbina, Christian Kurdi, Wesley Evans
 -- Database Design
 
 -- DROP TABLE equipment;
@@ -50,7 +50,7 @@ CREATE TABLE attends (
   attendance_date DATE NOT NULL,
   PRIMARY KEY (member_id, class_id, attendance_date),
   FOREIGN KEY(member_id) REFERENCES member(memberId),
-  FOREIGN KEY(class_id) REFERENCES class(class_id)
+  FOREIGN KEY(class_id) REFERENCES class(classId)
 );
 
 --MEMBER TABLE
@@ -82,3 +82,28 @@ CREATE TABLE payment(
   FOREIGN KEY(memberId) REFERENCES member(memberId),
   FOREIGN KEY(planId) REFERENCES membershipPlan(planId)
 )
+
+--CLASS TABLE
+CREATE TABLE class (
+    classId       INTEGER      PRIMARY KEY AUTOINCREMENT,
+    className     VARCHAR (50),
+    classType     VARCHAR (20) CHECK (classType == "Yoga" OR
+                                      classType == "Zumba" OR
+                                      classType == "HIIT" OR
+                                      classType == "Weights"),
+    duration      INTEGER NOT NULL,
+    classCapacity INTEGER NOT NULL,
+    instrucotorId INTEGER
+    gymID         INTEGER
+    FOREIGN KEY(InstructorId) Instructor (InstructorId),
+    FOREIGN KEY(gymID) REFERENCES gym_facility (gym_id) 
+);
+
+--INSTRUCTOR TABLE
+CREATE TABLE Instructor (
+    instructorId INTEGER       PRIMARY KEY AUTOINCREMENT,
+    name         VARCHAR (50),
+    specialty    VARCHAR (50),
+    phone        VARCHAR (15),
+    email        VARCHAR (100) NOT NULL
+);
