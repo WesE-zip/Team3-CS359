@@ -1,28 +1,9 @@
 -- Cruz Urbina, Christian Kurdi, Wesley Evans
 -- Database Design
 
--- DROP TABLE equipment;
--- DROP TABLE gym_facility;
--- DROP TABLE attends;
--- DROP TABLE class;
--- DROP TABLE member;
-
--- MEMBER TEMP TABLE
--- CREATE TABLE member (
--- 	member_id INTEGER PRIMARY KEY AUTOINCREMENT,
--- 	proxy INTEGER
--- );
-
--- -- CLASS TEMP TABLE
--- CREATE TABLE class (
--- 	class_id INTEGER PRIMARY KEY AUTOINCREMENT,
--- 	proxy INTEGER
--- );
-
-
 -- EQUIPMENT TABLE
 CREATE TABLE equipment (
-  equipment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  equipmentId INTEGER PRIMARY KEY AUTOINCREMENT,
   name VARCHAR(50) NOT NULL,
   type VARCHAR(30)
             CHECK( 
@@ -31,13 +12,13 @@ CREATE TABLE equipment (
                 type == "Flexibility" OR
                 type == "Recovery"),
   quantity INTEGER(30),
-  gym_id INTEGER,
-  FOREIGN KEY(gym_id) REFERENCES gym_facility(gym_id)
+  gymId INTEGER,
+  FOREIGN KEY(gymId) REFERENCES gymFacility(gymId)
 );
 
 -- GYM FACILITY TABLE
-CREATE TABLE gym_facility (
-  gym_id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE gymFacility (
+  gymId INTEGER PRIMARY KEY AUTOINCREMENT,
   location VARCHAR(100),
   phone VARCHAR(50),
   manager VARCHAR(50)
@@ -45,12 +26,12 @@ CREATE TABLE gym_facility (
 
 -- ATTENDS TABLE
 CREATE TABLE attends (
-  member_id INTEGER NOT NULL,
-  class_id INTEGER NOT NULL,
-  attendance_date DATE NOT NULL,
-  PRIMARY KEY (member_id, class_id, attendance_date),
-  FOREIGN KEY(member_id) REFERENCES member(memberId),
-  FOREIGN KEY(class_id) REFERENCES class(classId)
+  memberId INTEGER NOT NULL,
+  classId INTEGER NOT NULL,
+  attendanceDate DATE NOT NULL,
+  PRIMARY KEY (memberId, classId, attendanceDate),
+  FOREIGN KEY(memberId) REFERENCES member(memberId),
+  FOREIGN KEY(classId) REFERENCES class(classId)
 );
 
 --MEMBER TABLE
@@ -96,7 +77,7 @@ CREATE TABLE class (
     instrucotorId INTEGER
     gymID         INTEGER
     FOREIGN KEY(InstructorId) Instructor (InstructorId),
-    FOREIGN KEY(gymID) REFERENCES gym_facility (gym_id) 
+    FOREIGN KEY(gymID) REFERENCES gymFacility (gymId) 
 );
 
 --INSTRUCTOR TABLE
