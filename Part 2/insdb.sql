@@ -1,13 +1,6 @@
 -- Cruz Urbina, Christian Kurdi
 -- Database Design
 
--- INSERT TEMP DATA
--- INSERT INTO class (proxy) VALUES (1);
--- INSERT INTO class (proxy) VALUES (1);
--- INSERT INTO class (proxy) VALUES (1);
--- INSERT INTO class (proxy) VALUES (1);
--- INSERT INTO class (proxy) VALUES (1);
-
 --INSERT MEMBER DATA
 INSERT INTO member(memberId, name, email, phone, address, age, membershipStartDate, membershipEndDate)
 VALUES 
@@ -37,7 +30,7 @@ VALUES
 
 
 -- INSERT GYM FACILITY DATA
-INSERT INTO gym_facility (location, phone, manager)
+INSERT INTO gymFacility (location, phone, manager)
 VALUES
   ('Northwest', '(888)789-1122', 'Russell Walter'),
   ('Mission Valley', '(888)789-1244', 'Jesus Garcia'),
@@ -46,7 +39,7 @@ VALUES
   ('Mesilla Park', '(888)321-8956', 'Tyler Mason');
 
 -- INSERT EQUIPMENT DATA  
-INSERT INTO equipment (name, type, quantity, gym_id)
+INSERT INTO equipment (name, type, quantity, gymId)
 VALUES
   ('Bench Press', 'Strength', 6, 1),
   ('Bench Press', 'Strength', 8, 2),
@@ -67,7 +60,7 @@ VALUES
   ('Massage Gun', 'Recovery', 5, 1);
 
 -- INSERT ATTENDS DATA
-INSERT INTO attends (member_id, class_id, attendance_date)
+INSERT INTO attends (memberId, classId, attendanceDate)
 VALUES
   (1, 1, DATE('now')),
   (2, 1, DATE('now')),
