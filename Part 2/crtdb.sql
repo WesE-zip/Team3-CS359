@@ -62,7 +62,7 @@ CREATE TABLE payment(
   paymentDate DATE NOT NULL,
   FOREIGN KEY(memberId) REFERENCES member(memberId),
   FOREIGN KEY(planId) REFERENCES membershipPlan(planId)
-)
+);
 
 --CLASS TABLE
 CREATE TABLE class (
