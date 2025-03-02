@@ -76,7 +76,7 @@ CREATE TABLE class(
     classCapacity INTEGER NOT NULL,
     instructorId INTEGER,
     gymID         INTEGER,
-    FOREIGN KEY(InstructorId) REFERENCES Instructor (instructorId),
+    FOREIGN KEY(instructorId) REFERENCES Instructor (instructorId),
     FOREIGN KEY(gymID) REFERENCES gymFacility (gymId) 
 );
 
