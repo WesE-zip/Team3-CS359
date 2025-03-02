@@ -74,7 +74,7 @@ CREATE TABLE class(
                                       classType == 'Weights'),
     duration      INTEGER NOT NULL,
     classCapacity INTEGER NOT NULL,
-    instrucotorId INTEGER,
+    instructorId INTEGER,
     gymID         INTEGER,
     FOREIGN KEY(InstructorId) REFERENCES Instructor (instructorId),
     FOREIGN KEY(gymID) REFERENCES gymFacility (gymId) 
