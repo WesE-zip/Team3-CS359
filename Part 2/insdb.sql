@@ -80,7 +80,7 @@ VALUES
   (5, 'Nate', 'Weights', '(888)789-4516','Nate.instructor@XYZgym.com');
 
 --INSERT CLASS DATA
-INSERT INTO   class (classId, className, classType, duration, classCapacity, instrucotorId, gymID)
+INSERT INTO   class (classId, className, classType, duration, classCapacity, instructorId, gymID)
 VALUES
   (1, 'HIIT with Hunt', 'HIIT', 20, 5, 1, 2),
   (2, 'HIIT with Elliot', 'HIIT', 20, 5, 4, 4),
