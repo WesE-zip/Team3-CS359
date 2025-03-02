@@ -7,10 +7,10 @@ CREATE TABLE equipment (
   name VARCHAR(50) NOT NULL,
   type VARCHAR(30)
             CHECK( 
-                type == "Cardio" OR
-                type == "Strength" OR
-                type == "Flexibility" OR
-                type == "Recovery"),
+                type == 'Cardio' OR
+                type == 'Strength' OR
+                type == 'Flexibility' OR
+                type == 'Recovery'),
   quantity INTEGER(30),
   gymId INTEGER,
   FOREIGN KEY(gymId) REFERENCES gymFacility(gymId)
@@ -68,10 +68,10 @@ CREATE TABLE payment(
 CREATE TABLE class (
     classId       INTEGER      PRIMARY KEY AUTOINCREMENT,
     className     VARCHAR (50),
-    classType     VARCHAR (20) CHECK (classType == "Yoga" OR
-                                      classType == "Zumba" OR
-                                      classType == "HIIT" OR
-                                      classType == "Weights"),
+    classType     VARCHAR (20) CHECK (classType == 'Yoga' OR
+                                      classType == 'Zumba' OR
+                                      classType == 'HIIT' OR
+                                      classType == 'Weights'),
     duration      INTEGER NOT NULL,
     classCapacity INTEGER NOT NULL,
     instrucotorId INTEGER
