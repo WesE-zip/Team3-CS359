@@ -65,8 +65,8 @@ CREATE TABLE payment(
 );
 
 --CLASS TABLE
-CREATE TABLE class (
-    classId       INTEGER      PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE class(
+    classId INTEGER PRIMARY KEY AUTOINCREMENT,
     className     VARCHAR (50),
     classType     VARCHAR (20) CHECK (classType == 'Yoga' OR
                                       classType == 'Zumba' OR
@@ -74,9 +74,9 @@ CREATE TABLE class (
                                       classType == 'Weights'),
     duration      INTEGER NOT NULL,
     classCapacity INTEGER NOT NULL,
-    instrucotorId INTEGER
-    gymID         INTEGER
-    FOREIGN KEY(InstructorId) Instructor (InstructorId),
+    instrucotorId INTEGER,
+    gymID         INTEGER,
+    FOREIGN KEY(InstructorId) REFERENCES Instructor (instructorId),
     FOREIGN KEY(gymID) REFERENCES gymFacility (gymId) 
 );
 
