@@ -15,9 +15,9 @@ INSERT INTO membershipPlan(planId, planType, cost)
 VALUES 
   (1, 'Monthly', 49.95),
   (2, 'Monthly', 69.95),
-  (3, 'Annually', 99.99), 
-  (4, 'Annually', 125.99),
-  (5, 'Annually', 200.99);
+  (3, 'Annual', 99.99), 
+  (4, 'Annual', 125.99),
+  (5, 'Annual', 200.99);
 
 --INSERT PAYMENT DATA
 INSERT INTO payment(paymentId, memberId, planId, amountPaid, paymentDate)
