@@ -1,70 +1,108 @@
 import sys
+import sqlite3
+from sqlite3 import Error
+
 
 
 class SQLHandler:
     def __init__(self, question_num, param1):
         self.question_num = question_num
         self.param1 = param1
+        self.dbName = "XYZGym.sqlite"
 
-    def question_one(self):
-        print("Question One...")
-        
-    def question_two(self):
+    def question_one(self, connection):
+        getMembers = "select member.name, member.email, member.age, planId from member natural join (select memberId, planId from payment)"
+        cursor = connection.cursor()
+        cursor.execute(getMembers)
+        for member in cursor:
+            print(f"Member name: {member[0]}, Email: {member[1]}, Age: {member[2]}, Membership Plan: {member[3]}")
+
+        self.closeConnection(connection)
+
+    def question_two(self, connection):
         print("Question Two...")
-        
-    def question_three(self):
+
+    def question_three(self, connection):
         print("Question Three...")
         p1 = self.param1
         print("Parameter: ", p1)
-        
-    def question_four(self):
+
+    def question_four(self, connection):
         print("Question Four...")
         p1 = self.param1
         print("Parameter: ", p1)
-        
-    def question_five(self):
+
+    def question_five(self, connection):
         print("Question Five...")
-        
-    def question_six(self):
+
+    def question_six(self, connection):
         print("Question Six...")
         p1 = self.param1
         print("Parameter: ", p1)
-        
-    def question_seven(self):
+
+    def question_seven(self, connection):
         print("Question Seven...")
-        
-    def question_eight(self):
+
+    def question_eight(self, connection):
         print("Question Eight...")
-        
-    def question_nine(self):
+
+    def question_nine(self, connection):
         print("Question Nine...")
         p1 = self.param1
         print("Parameter: ", p1)
-        
-    def question_ten(self):
+
+    def question_ten(self, connection):
         print("Question Ten...")
-        
+
     def error_msg(self):
         print("Query failed...")
-        
+
     # Executes the question according to number
     # and validates if parameter value has been passed
-    def exec(self):
+    def exec(self, connection):
         q_num = self.question_num
         p1 = self.param1
-        
-        if q_num == 1: self.question_one()
-        elif q_num == 2: self.question_two()
-        elif q_num == 3 and p1: self.question_three()
-        elif q_num == 4 and p1: self.question_four()
-        elif q_num == 5: self.question_five()
-        elif q_num == 6 and p1: self.question_six()
-        elif q_num == 7: self.question_seven()
-        elif q_num == 8: self.question_eight()
-        elif q_num == 9 and p1: self.question_nine()
-        elif q_num == 10: self.question_ten()
-        else: self.error_msg()
-    
+
+        if q_num == 1:
+            self.question_one(connection)
+        elif q_num == 2:
+            self.question_two(connection)
+        elif q_num == 3 and p1:
+            self.question_three(connection)
+        elif q_num == 4 and p1:
+            self.question_four(connection)
+        elif q_num == 5:
+            self.question_five(connection)
+        elif q_num == 6 and p1:
+            self.question_six(connection)
+        elif q_num == 7:
+            self.question_seven(connection)
+        elif q_num == 8:
+            self.question_eight(connection)
+        elif q_num == 9 and p1:
+            self.question_nine(connection)
+        elif q_num == 10:
+            self.question_ten(connection)
+        else:
+            self.error_msg()
+
+    def createConnection(self):
+        connection = None
+        try:
+            connection = sqlite3.connect(self.dbName)
+            print(f"Connection established with {sqlite3.version}")
+            cursor = connection.cursor()
+            cursor.execute("PRAGMA foreign_key = ON")
+        except Error as e:
+            print(f"Error while connecting to database: {e}")
+        finally:
+            if connection:
+                return connection
+
+
+    def closeConnection(self, connection):
+        connection.close()
+
 # Main method
 # Validates the question number type (ex. Int)
 # Checks if a parameter value has been passed
@@ -72,7 +110,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Missing question number.")
         sys.exit()
-        
+
     try:
         question_num = int(sys.argv[1])
     except ValueError:
@@ -84,5 +122,5 @@ if __name__ == "__main__":
         param1 = sys.argv[2]
 
     sql_handler = SQLHandler(question_num, param1)
-    sql_handler.exec()
-    
+    connection = sql_handler.createConnection()
+    sql_handler.exec(connection)
