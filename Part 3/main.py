@@ -20,7 +20,19 @@ class SQLHandler:
         self.closeConnection(connection)
 
     def question_two(self, connection):
-        print("Question Two...")
+        getID = "select gymID from gymFacility"#Find existing gymID's
+
+        cursor = connection.cursor()
+        cursor.execute(getID)
+        for line in cursor:
+
+            findInfo = "select count(gymID) from class where gymID = " + str(line[0])
+            #Get info for each gymID
+            cursor2 = connection.cursor()
+            cursor2.execute(findInfo)
+            count = cursor2.fetchone()[0]
+            print(f"The number of classes at gym {line[0]} is {count}")
+
 
     def question_three(self, connection):
         print("Question Three...")
