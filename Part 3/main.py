@@ -7,7 +7,7 @@ from sqlite3 import Error
 class SQLHandler:
     def __init__(self, question_num, param1):
         self.question_num = question_num
-        self.param1 = param1
+        self.param1 = str(param1)
         self.dbName = "XYZGym.sqlite"
 
     def question_one(self, connection):
@@ -35,9 +35,13 @@ class SQLHandler:
 
 
     def question_three(self, connection):
-        print("Question Three...")
         p1 = self.param1
-        print("Parameter: ", p1)
+        print(f"Retrieving names of members attending class {p1}")
+        getNames = "select member.name from (member natural join attends) where attends.classID = " + p1
+        cursor = connection.cursor()
+        cursor.execute(getNames)
+        for line in cursor:
+            print(f"Member name: {line[0]}")
 
     def question_four(self, connection):
         print("Question Four...")
@@ -45,7 +49,12 @@ class SQLHandler:
         print("Parameter: ", p1)
 
     def question_five(self, connection):
-        print("Question Five...")
+        checkMembership = "select name from member where membershipEndDate < date('now')"
+        cursor = connection.cursor()
+        cursor.execute(checkMembership)
+        print("Members with expired memberships:")
+        for member in cursor:
+            print(f"Member name: {member[0]}")
 
     def question_six(self, connection):
         print("Question Six...")
