@@ -1,13 +1,14 @@
+# Cruz Urbina
+
 import sys
 import sqlite3
 from sqlite3 import Error
 
 
-
 class SQLHandler:
     def __init__(self, question_num, param1):
         self.question_num = question_num
-        self.param1 = str(param1)
+        self.param1 = param1
         self.dbName = "XYZGym.sqlite"
 
     def question_one(self, connection):
@@ -20,16 +21,22 @@ class SQLHandler:
         self.closeConnection(connection)
 
     def question_two(self, connection):
-        getInfo = "select count(classID), gymID from class group by gymID"
+        getID = "select gymID from gymFacility"#Find existing gymID's
 
         cursor = connection.cursor()
-        cursor.execute(getInfo)
+        cursor.execute(getID)
         for line in cursor:
-            print(f"The number of classes at gym {line[1]} is {line[0]}")
+
+            findInfo = "select count(gymID) from class where gymID = " + str(line[0])
+            #Get info for each gymID
+            cursor2 = connection.cursor()
+            cursor2.execute(findInfo)
+            count = cursor2.fetchone()[0]
+            print(f"The number of classes at gym {line[0]} is {count}")
 
 
     def question_three(self, connection):
-        p1 = self.param1
+        p1 = str(self.param1)
         print(f"Retrieving names of members attending class {p1}")
         getNames = "select member.name from (member natural join attends) where attends.classID = " + p1
         cursor = connection.cursor()
@@ -38,9 +45,18 @@ class SQLHandler:
             print(f"Member name: {line[0]}")
 
     def question_four(self, connection):
-        print("Question Four...")
         p1 = self.param1
-        print("Parameter: ", p1)
+        print(f"Retrieving all equipment of type: {p1}")
+        
+        getEquipment = f"SELECT * FROM equipment WHERE type = ?"
+        cursor = connection.cursor()
+        cursor.execute(getEquipment, (p1,))
+        
+        print("ID\t\tName\t\tType\t\tQuantity\t\tGymID")
+        for line in cursor:
+            print(f"{line[0]}\t\t{line[1]}\t\t{line[2]}\t\t{line[3]}\t\t{line[4]}")
+            
+        self.closeConnection(connection)
 
     def question_five(self, connection):
         checkMembership = "select name from member where membershipEndDate < date('now')"
@@ -56,7 +72,20 @@ class SQLHandler:
         print("Parameter: ", p1)
 
     def question_seven(self, connection):
-        print("Question Seven...")
+        getAverageAge = """
+        SELECT 
+            avg(CASE WHEN membershipEndDate < date('now') THEN age END) AS expiredAgeAVG,
+            avg(CASE WHEN membershipEndDate >= date('now') THEN age END) AS activeAgeAVG
+        FROM member
+        """
+        cursor = connection.cursor()
+        cursor.execute(getAverageAge)
+        print("Exp - AVG Age\tAct - AVG Age")
+        for line in cursor:
+            print(f"{line[0]}\t\t{line[1]}")
+
+        self.closeConnection(connection)
+
 
     def question_eight(self, connection):
         print("Question Eight...")
@@ -67,7 +96,25 @@ class SQLHandler:
         print("Parameter: ", p1)
 
     def question_ten(self, connection):
-        print("Question Ten...")
+        print("Recent Class Attendance:")
+        getTotalClasses = """
+        SELECT 
+            member.name, count(attends.classID) as totalClasses, 
+            group_concat(DISTINCT class.className) as classesAttended, 
+            group_concat(DISTINCT class.classType) as classTypes 
+        FROM ((member INNER JOIN attends ON member.memberId = attends.memberId) 
+        INNER JOIN class ON attends.classId = class.classId) 
+        WHERE attends.attendanceDate >= DATE('now', '-1 month') 
+        GROUP BY member.memberId
+        """
+        cursor = connection.cursor()
+        cursor.execute(getTotalClasses)
+        print("Member Name\t\tTotal Classes\t\tClasses Attended\t\tClass Type")
+        print("="*95)
+        for line in cursor:
+            print(f"{line[0]}\t\t{line[1]}\t\t{line[2]}\t\t{line[3]}")
+        
+        self.closeConnection(connection)
 
     def error_msg(self):
         print("Query failed...")
@@ -105,7 +152,7 @@ class SQLHandler:
         connection = None
         try:
             connection = sqlite3.connect(self.dbName)
-            print(f"Connection established with {sqlite3.version}")
+            print(f"Connection established with {sqlite3.sqlite_version}")
             cursor = connection.cursor()
             cursor.execute("PRAGMA foreign_key = ON")
         except Error as e:
