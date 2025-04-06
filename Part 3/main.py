@@ -67,9 +67,17 @@ class SQLHandler:
             print(f"Member name: {member[0]}")
 
     def question_six(self, connection):
-        print("Question Six...")
         p1 = self.param1
-        print("Parameter: ", p1)
+        print(f"Retriving all classes taught by instructor with Id: {p1}")
+        getClasses = """
+        SELECT name, phone, className, classType, duration, classCapacity FROM instructor FULL OUTER JOIN class ON class.instructorId = Instructor.instructorId WHERE type = ?
+        """
+        cursor = connection.cursor()
+        cursor.execute(getClasses, (p1,))
+        print("Instructor\t\tPhone number\t\tClass Name\t\tClass Type\t\tClass Capacity")
+        print("="*95)
+        for line in cursor:
+            print(f"{line[0]}\t\t{line[1]}\t\t{line[2]}\t\t{line[3]}\t\t{line[4]}")
 
     def question_seven(self, connection):
         getAverageAge = """
@@ -88,12 +96,28 @@ class SQLHandler:
 
 
     def question_eight(self, connection):
-        print("Question Eight...")
-
+        print("Top three instructors")
+        getTopThree = """
+        SELECT instructorId, COUNT(*) AS countOfClasses FROM class GROUP BY instructorId ORDER BY countOfClasses DESC LIMIT 3
+        """
+        cursor = connection.cursor()
+        cursor.execute(getTopThree)
+        print("Instructor Id\t\tNumber of classes")
+        print("="*95)
+        for line in cursor:
+            print(f"{line[0]}\t\t{line[1]}")
+        
     def question_nine(self, connection):
-        print("Question Nine...")
         p1 = self.param1
-        print("Parameter: ", p1)
+        print(f"Members who have attended {p1} type of class")
+        getMembers = """
+        SELECT memberId FROM attends FULL OUTER JOIN class ON attends.classId = class.classId WHERE class.classType = ?
+        """
+        cursor = connection.cursor()
+        cursor.execute(getMembers, (p1,))
+        print("="*95)
+        for line in cursor:
+            print(f"{line[0]}")
 
     def question_ten(self, connection):
         print("Recent Class Attendance:")
