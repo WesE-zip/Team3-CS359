@@ -11,6 +11,7 @@ class SQLHandler:
         self.param1 = param1
         self.dbName = "XYZGym.sqlite"
 
+    # Question #1
     def question_one(self, connection):
         getMembers = "select member.name, member.email, member.age, planId from member natural join (select memberId, planId from payment)"
         cursor = connection.cursor()
@@ -20,6 +21,7 @@ class SQLHandler:
 
         self.closeConnection(connection)
 
+    # Question #2
     def question_two(self, connection):
         getID = "select gymID from gymFacility"#Find existing gymID's
 
@@ -34,30 +36,33 @@ class SQLHandler:
             count = cursor2.fetchone()[0]
             print(f"The number of classes at gym {line[0]} is {count}")
 
-
+    # Question #3
     def question_three(self, connection):
         p1 = str(self.param1)
         print(f"Retrieving names of members attending class {p1}")
-        getNames = "select member.name from (member natural join attends) where attends.classID = " + p1
+        getNames = "select member.name from (member natural join attends) where attends.classID = ? GROUP BY member.name"
         cursor = connection.cursor()
-        cursor.execute(getNames)
+        cursor.execute(getNames, (p1,))
         for line in cursor:
             print(f"Member name: {line[0]}")
 
+    # Question #4
     def question_four(self, connection):
         p1 = self.param1
-        print(f"Retrieving all equipment of type: {p1}")
+        print(f"All equipment of type: {p1}")
         
         getEquipment = f"SELECT * FROM equipment WHERE type = ?"
         cursor = connection.cursor()
         cursor.execute(getEquipment, (p1,))
         
-        print("ID\t\tName\t\tType\t\tQuantity\t\tGymID")
+        print("ID\t\tName\t\tType\t\tQuantity\tGymID")
+        print("="*95)
         for line in cursor:
-            print(f"{line[0]}\t\t{line[1]}\t\t{line[2]}\t\t{line[3]}\t\t{line[4]}")
+            print(f"{line[0]}\t{line[1]:>15}\t{line[2]:>12}\t{line[3]:>15}\t{line[4]:>12}")
             
         self.closeConnection(connection)
 
+    # Question #5
     def question_five(self, connection):
         checkMembership = "select name from member where membershipEndDate < date('now')"
         cursor = connection.cursor()
@@ -66,19 +71,26 @@ class SQLHandler:
         for member in cursor:
             print(f"Member name: {member[0]}")
 
+    # Question #6
     def question_six(self, connection):
         p1 = self.param1
-        print(f"Retriving all classes taught by instructor with Id: {p1}")
+        print(f"All classes taught by instructor with Id: {p1}")
         getClasses = """
-        SELECT name, phone, className, classType, duration, classCapacity FROM instructor FULL OUTER JOIN class ON class.instructorId = Instructor.instructorId WHERE type = ?
+        SELECT 
+            name, phone, className, classType, duration, classCapacity 
+        FROM instructor 
+        INNER JOIN class 
+        ON class.instructorId = instructor.instructorId 
+        WHERE instructor.instructorId = ?
         """
         cursor = connection.cursor()
         cursor.execute(getClasses, (p1,))
-        print("Instructor\t\tPhone number\t\tClass Name\t\tClass Type\t\tClass Capacity")
+        print("Instructor\tPhone number\t\tClass Name\t\tClass Type\tClass Capacity")
         print("="*95)
         for line in cursor:
-            print(f"{line[0]}\t\t{line[1]}\t\t{line[2]}\t\t{line[3]}\t\t{line[4]}")
+            print(f"{line[0]:<8}\t{line[1]:>10}\t{line[2]:>18}\t\t{line[3]:>10}\t\t{line[4]:>5}")
 
+    # Question #7
     def question_seven(self, connection):
         getAverageAge = """
         SELECT 
@@ -90,28 +102,40 @@ class SQLHandler:
         cursor.execute(getAverageAge)
         print("Exp - AVG Age\tAct - AVG Age")
         for line in cursor:
-            print(f"{line[0]}\t\t{line[1]}")
+            print(f"{int(line[0])}\t\t{int(line[1])}")
 
         self.closeConnection(connection)
 
-
+    # Question #8*
     def question_eight(self, connection):
-        print("Top three instructors")
+        print("Top three instructors:")
         getTopThree = """
-        SELECT instructorId, COUNT(*) AS countOfClasses FROM class GROUP BY instructorId ORDER BY countOfClasses DESC LIMIT 3
+        SELECT instructor.name, COUNT(*) AS countOfClasses 
+        FROM class 
+        INNER JOIN instructor
+        ON class.instructorId = instructor.instructorId
+        GROUP BY class.instructorId 
+        ORDER BY countOfClasses 
+        DESC LIMIT 3
         """
         cursor = connection.cursor()
         cursor.execute(getTopThree)
-        print("Instructor Id\t\tNumber of classes")
+        print("Instructor Id\tNumber of classes")
         print("="*95)
         for line in cursor:
-            print(f"{line[0]}\t\t{line[1]}")
+            print(f"{line[0]:10}\t\t{line[1]:8}")
         
+    # Question #9*
     def question_nine(self, connection):
         p1 = self.param1
         print(f"Members who have attended {p1} type of class")
         getMembers = """
-        SELECT memberId FROM attends FULL OUTER JOIN class ON attends.classId = class.classId WHERE class.classType = ?
+        SELECT memberId 
+        FROM attends 
+        INNER JOIN class 
+        ON attends.classId = class.classId 
+        WHERE class.classType = ?
+        GROUP BY attends.memberId
         """
         cursor = connection.cursor()
         cursor.execute(getMembers, (p1,))
@@ -119,6 +143,7 @@ class SQLHandler:
         for line in cursor:
             print(f"{line[0]}")
 
+    # Question #10
     def question_ten(self, connection):
         print("Recent Class Attendance:")
         getTotalClasses = """
@@ -136,7 +161,7 @@ class SQLHandler:
         print("Member Name\t\tTotal Classes\t\tClasses Attended\t\tClass Type")
         print("="*95)
         for line in cursor:
-            print(f"{line[0]}\t\t{line[1]}\t\t{line[2]}\t\t{line[3]}")
+            print(f"{line[0]:<12}\t{line[1]:>20}\t{line[2]:>24}\t{line[3]:>19}")
         
         self.closeConnection(connection)
 
