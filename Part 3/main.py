@@ -81,7 +81,7 @@ class SQLHandler:
         FROM instructor 
         INNER JOIN class 
         ON class.instructorId = instructor.instructorId 
-        WHERE instructor.instructorId = ?
+        WHERE class.instructorId = ?
         """
         cursor = connection.cursor()
         cursor.execute(getClasses, (p1,))
