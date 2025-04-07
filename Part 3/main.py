@@ -1,4 +1,4 @@
-# Cruz Urbina
+# Cruz Urbina, Christian Kurdi, Wesley Evans
 
 import sys
 import sqlite3
@@ -36,6 +36,8 @@ class SQLHandler:
             count = cursor2.fetchone()[0]
             print(f"The number of classes at gym {line[0]} is {count}")
 
+        self.closeConnection(connection)
+
     # Question #3
     def question_three(self, connection):
         p1 = str(self.param1)
@@ -45,6 +47,8 @@ class SQLHandler:
         cursor.execute(getNames, (p1,))
         for line in cursor:
             print(f"Member name: {line[0]}")
+
+        self.closeConnection(connection)
 
     # Question #4
     def question_four(self, connection):
@@ -71,6 +75,8 @@ class SQLHandler:
         for member in cursor:
             print(f"Member name: {member[0]}")
 
+        self.closeConnection(connection)
+
     # Question #6
     def question_six(self, connection):
         p1 = self.param1
@@ -89,6 +95,8 @@ class SQLHandler:
         print("="*95)
         for line in cursor:
             print(f"{line[0]:<8}\t{line[1]:>10}\t{line[2]:>18}\t\t{line[3]:>10}\t\t{line[4]:>5}")
+
+        self.closeConnection(connection)
 
     # Question #7
     def question_seven(self, connection):
@@ -124,6 +132,8 @@ class SQLHandler:
         print("="*95)
         for line in cursor:
             print(f"{line[0]:10}\t\t{line[1]:8}")
+
+        self.closeConnection(connection)
         
     # Question #9*
     def question_nine(self, connection):
@@ -142,6 +152,8 @@ class SQLHandler:
         print("="*95)
         for line in cursor:
             print(f"{line[0]}")
+
+        self.closeConnection(connection)
 
     # Question #10
     def question_ten(self, connection):
