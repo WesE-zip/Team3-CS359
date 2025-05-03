@@ -8,6 +8,7 @@ from sqlite3 import Error
 from docs import MemberFrame as mf
 from docs import ClassesFrame as cf
 from docs import EquipmentFrame as ef
+from tkinter.messagebox import showinfo
 
 
 class App(tk.Tk):
@@ -71,7 +72,7 @@ class App(tk.Tk):
     # Set current
     def setFrame(self, frame):
         if frame == "MEMBERS":
-            mf.MemberFrame(self, self.mainFrame, self.connection)
+            mf.MemberFrame(self.mainFrame, self.connection, self)
             
         if frame == "CLASSES":
             cf.ClassesFrame(self, self.mainFrame, self.connection)
@@ -100,7 +101,7 @@ class App(tk.Tk):
         if self.createConnection(dbName):
             self.loadMenuFrame()
         else:
-            messagebox.showerror("SQLite Connection", "Database not found.")
+            showinfo("SQLite Connection", "Database not found.")
 
     # Close SQLite connection
     def closeConnection(self):
