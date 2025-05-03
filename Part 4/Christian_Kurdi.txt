@@ -1,1 +1,1 @@
-
+I created MemberFrame.py, updateFrame.py, removeFrame.py, and Queries.py
