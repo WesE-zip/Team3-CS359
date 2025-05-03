@@ -19,7 +19,7 @@ class App(tk.Tk):
         self.geometry("600x400")
         
         self.mainFrame = ttk.Frame(self)
-        self.mainFrame.pack(padx=10, expand=True, fill=tk.BOTH)
+        self.mainFrame.pack(padx=10, expand=True, fill=tk.Y)
         
         self.loadConnFrame()
         
@@ -28,14 +28,17 @@ class App(tk.Tk):
         
     # Loads Connection Frame    
     def loadConnFrame(self):
-        label = ttk.Label(self.mainFrame, text="Database Name:")
-        label.pack(padx=5, pady=5)
+        label = ttk.Label(self.mainFrame, text="DATABASE", font=("Helvetica", 12, "bold"))
+        label.pack(padx=5, pady=15)
+        
+        label = ttk.Label(self.mainFrame, text="ENTER DATABASE NAME:")
+        label.pack(fill=tk.X, padx=5, pady=5)
         
         entry = ttk.Entry(self.mainFrame)
-        entry.pack(padx=5, pady=5)
+        entry.pack(fill=tk.X, padx=5, pady=5)
         
         button = ttk.Button(self.mainFrame, text="CONNECT", command=lambda: self.checkConn(entry.get()))
-        button.pack(padx=5, pady=5)
+        button.pack(fill=tk.X, padx=5, pady=10)
         
     
     # Clears Frame
@@ -43,20 +46,20 @@ class App(tk.Tk):
     def loadMenuFrame(self):
         self.clearFrame()
         
-        label = ttk.Label(self.mainFrame, text="MAIN MENU")
-        label.pack(padx=5, pady=5)
+        label = ttk.Label(self.mainFrame, text="MAIN MENU", font=("Helvetica", 12, "bold"))
+        label.pack(padx=5, pady=15)
   
         button = ttk.Button(self.mainFrame, text="MEMBERS", command=lambda: self.setFrame("MEMBERS"))
-        button.pack(padx=5, pady=5)
+        button.pack(fill=tk.X, padx=5, pady=5)
         
         button = ttk.Button(self.mainFrame, text="CLASSES", command=lambda: self.setFrame("CLASSES"))
-        button.pack(padx=5, pady=5)
+        button.pack(fill=tk.X, padx=5, pady=5)
         
         button = ttk.Button(self.mainFrame, text="EQUIPMENT", command=lambda: self.setFrame("EQUIPMENT"))
-        button.pack(padx=5, pady=5)
+        button.pack(fill=tk.X, padx=5, pady=5)
         
         button = ttk.Button(self.mainFrame, text="LOGOUT & EXIT", command=lambda: sys.exit())
-        button.pack(padx=5, pady=5)
+        button.pack(fill=tk.X, padx=5, pady=5)
         
         
     # Function to clear out all widgets inside a frame
