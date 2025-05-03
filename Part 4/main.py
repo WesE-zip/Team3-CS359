@@ -86,7 +86,7 @@ class App(tk.Tk):
         try:
             self.connection = sqlite3.connect(self.dbName)
             print(f"Connection established with {sqlite3.sqlite_version}")
-            cursor = connection.cursor()
+            cursor = self.connection.cursor()
             cursor.execute("PRAGMA foreign_key = ON")
             return True
         except Error as e:
@@ -97,7 +97,7 @@ class App(tk.Tk):
     # Check connection
     # TRUE: Load Menu Frame
     def checkConn(self, dbName):
-        if True: #self.createConnection(dbName):
+        if self.createConnection(dbName):
             self.loadMenuFrame()
         else:
             messagebox.showerror("SQLite Connection", "Database not found.")
