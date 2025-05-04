@@ -1,6 +1,7 @@
 import sys
 import sqlite3
 from sqlite3 import Error
+from tkinter.messagebox import showinfo
 import tkinter as tk
 import tkinter.ttk as ttk
 
@@ -11,6 +12,7 @@ class ClassesFrame():
         self.mainFrame = master
         self.conn = conn
         self.sel_option = tk.StringVar(self.mainFrame)
+        self.id = None
 
         self.loadMenuFrame()
 
@@ -28,7 +30,7 @@ class ClassesFrame():
         button = ttk.Button(self.mainFrame, text="Add new class", command=lambda: self.loadCreateFrame())
         button.pack(fill=tk.X, padx=5, pady=5)
         
-        button = ttk.Button(self.mainFrame, text="Update class information", command=lambda: self.loadUpdateFrame())
+        button = ttk.Button(self.mainFrame, text="Update class information", command=lambda: self.loadUpdateIdFrame())
         button.pack(fill=tk.X, padx=5, pady=5)
         
         button = ttk.Button(self.mainFrame, text="Delete class", command=lambda: self.loadDeleteFrame())
@@ -44,13 +46,11 @@ class ClassesFrame():
         label.pack(padx=5, pady=15)
 
         SQLget = """
-        SELECT class.className, class.classType, class.duration, class.classCapacity, instructor.name, count(attends.classId) as attendees FROM class FULL JOIN instructor ON class.instructorId = instructor.instructorId FULL JOIN attends ON class.classId = attends.classId GROUP BY attends.classId
+        SELECT class.className, class.classType, class.duration, class.classCapacity, instructor.name, count(attends.classId) as attendees FROM class FULL JOIN instructor ON class.instructorId = instructor.instructorId FULL JOIN attends ON class.classId = attends.classId GROUP BY class.classId
         """
-
+        
         data = self.getSQLData(SQLget)
 
-        # for line in data:
-        #     print(line[0])
         index = 0   
         columns = ("type", "dururation", "cap", "instructor", "attendes")
 
@@ -82,21 +82,144 @@ class ClassesFrame():
         label = ttk.Label(self.mainFrame, text="ADD CLASS", font=("Helvetica", 12, "bold"))
         label.pack(padx=5, pady=15)
 
+        infoFrame = ttk.Frame(self.mainFrame, width=550, height=600)
+        infoFrame.pack(side=tk.LEFT, fill=tk.X, expand=True, anchor=tk.N)
 
+        inputBox = ttk.Frame(infoFrame, width=550, height=100)
+        inputBox.grid(row=1, column=0, padx=10, pady=10)
 
-        button = ttk.Button(self.mainFrame, text="BACK TO CLASSES", command=lambda: self.loadMenuFrame())
-        button.pack(padx=5)
+        IdLabel = tk.Label(inputBox, text="Class ID", font=("Helvetica", 10))
+        IdLabel.grid(row=0, column=0, padx=5, pady=5)
+        IdEntry = ttk.Entry(inputBox)
+        IdEntry.grid(row=1, column=0, padx=5, pady=5)
 
-    def loadUpdateFrame(self):
+        nameLabel = tk.Label(inputBox, text="Name", font=("Helvetica", 10))
+        nameLabel.grid(row=0, column=1, padx=5, pady=5)
+        nameEntry = ttk.Entry(inputBox)
+        nameEntry.grid(row=1, column=1, padx=5, pady=5)
+
+        typeLabel = tk.Label(inputBox, text="Class Type", font=("Helvetica", 10))
+        typeLabel.grid(row=0, column=2, padx=5, pady=5)
+        typeEntry = ttk.Entry(inputBox)
+        typeEntry.grid(row=1, column=2, padx=5, pady=5)
+
+        durationLabel = tk.Label(inputBox, text="Duration", font=("Helvetica", 10))
+        durationLabel.grid(row=0, column=3, padx=5, pady=5)
+        durationEntry = ttk.Entry(inputBox)
+        durationEntry.grid(row=1, column=3, padx=5, pady=5)
+
+        capacityLabel = tk.Label(inputBox, text="Class Capacity", font=("Helvetica", 10))
+        capacityLabel.grid(row=2, column=0, padx=5, pady=5)
+        capacityEntry = ttk.Entry(inputBox)
+        capacityEntry.grid(row=3, column=0, padx=5, pady=5)
+
+        instructorLabel = tk.Label(inputBox, text="Instructor ID", font=("Helvetica", 10))
+        instructorLabel.grid(row=2, column=1, padx=5, pady=5)
+        instructorEntry = ttk.Entry(inputBox)
+        instructorEntry.grid(row=3, column=1, padx=5, pady=5)
+
+        gymLabel = tk.Label(inputBox, text="Gym ID", font=("Helvetica", 10))
+        gymLabel.grid(row=2, column=2, padx=5, pady=5)
+        gymEntry = ttk.Entry(inputBox)
+        gymEntry.grid(row=3, column=2, padx=5, pady=5)
+
+        button = ttk.Button(inputBox, text="ADD", command=lambda: self.addClass(IdEntry, nameEntry, typeEntry, durationEntry, capacityEntry, instructorEntry, gymEntry))
+        button.grid(row=3, column=3, padx=5, pady=5)
+
+        button = ttk.Button(inputBox, text="BACK TO CLASSES", command=lambda: self.loadMenuFrame())
+        button.grid(row=5, column=0, padx=5, pady=5)
+
+    def loadUpdateIdFrame(self):
         self.clearFrame()
 
         label = ttk.Label(self.mainFrame, text="UPDATE CLASS", font=("Helvetica", 12, "bold"))
         label.pack(padx=5, pady=15)
 
+        SQLRead = f"""
+        SELECT className, classId FROM class
+        """
+        data = self.getSQLData(SQLRead)
+
+        index = 0   
+        columns = ('id')
+
+        tree = ttk.Treeview(self.mainFrame, columns=columns)
+        tree.pack(padx=5, pady=5)
+
+        tree.column("#0", stretch=tk.NO, width=150)
+        tree.heading('#0', text='Classes')
+        tree.column("id", stretch=tk.NO, width=50)
+        tree.heading('id', text='Class Id')
+
+        for index, line in enumerate(data):
+            tree.insert('', tk.END, iid = index,
+                text = line[0], values = line[1:])        
+
+        label = ttk.Label(self.mainFrame, text="Class ID:")
+        label.pack(fill=tk.X, padx=5, pady=5)
         
+        IdEntry = ttk.Entry(self.mainFrame)
+        IdEntry.pack(fill=tk.X, padx=5)
+
+        button = ttk.Button(self.mainFrame, text='Edit', command=lambda: self.loadUpdateFrame(IdEntry))
+        button.pack(padx=5)
 
         button = ttk.Button(self.mainFrame, text="BACK TO CLASSES", command=lambda: self.loadMenuFrame())
         button.pack(padx=5)
+
+    def loadUpdateFrame(self, IdEntry):
+        id = IdEntry.get()
+        self.clearFrame()
+        print(id)
+        label = ttk.Label(self.mainFrame, text="UPDATE CLASS", font=("Helvetica", 12, "bold"))
+        label.pack(padx=5, pady=15)
+
+        infoFrame = ttk.Frame(self.mainFrame, width=550, height=600)
+        infoFrame.pack(side=tk.LEFT, fill=tk.X, expand=True, anchor=tk.N)
+
+        inputBox = ttk.Frame(infoFrame, width=550, height=100)
+        inputBox.grid(row=1, column=0, padx=10, pady=10)
+
+        IdLabel = tk.Label(inputBox, text="Class ID", font=("Helvetica", 10))
+        IdLabel.grid(row=0, column=0, padx=5, pady=5)
+        IdEntry = ttk.Label(inputBox, text=str(id), font=("Helvetica", 10))
+        IdEntry.grid(row=1, column=0, padx=5, pady=5)
+
+        nameLabel = tk.Label(inputBox, text="Name", font=("Helvetica", 10))
+        nameLabel.grid(row=0, column=1, padx=5, pady=5)
+        nameEntry = ttk.Entry(inputBox)
+        nameEntry.grid(row=1, column=1, padx=5, pady=5)
+
+        typeLabel = tk.Label(inputBox, text="Class Type", font=("Helvetica", 10))
+        typeLabel.grid(row=0, column=2, padx=5, pady=5)
+        typeEntry = ttk.Entry(inputBox)
+        typeEntry.grid(row=1, column=2, padx=5, pady=5)
+
+        durationLabel = tk.Label(inputBox, text="Duration", font=("Helvetica", 10))
+        durationLabel.grid(row=0, column=3, padx=5, pady=5)
+        durationEntry = ttk.Entry(inputBox)
+        durationEntry.grid(row=1, column=3, padx=5, pady=5)
+
+        capacityLabel = tk.Label(inputBox, text="Class Capacity", font=("Helvetica", 10))
+        capacityLabel.grid(row=2, column=0, padx=5, pady=5)
+        capacityEntry = ttk.Entry(inputBox)
+        capacityEntry.grid(row=3, column=0, padx=5, pady=5)
+
+        instructorLabel = tk.Label(inputBox, text="Instructor ID", font=("Helvetica", 10))
+        instructorLabel.grid(row=2, column=1, padx=5, pady=5)
+        instructorEntry = ttk.Entry(inputBox)
+        instructorEntry.grid(row=3, column=1, padx=5, pady=5)
+
+        gymLabel = tk.Label(inputBox, text="Gym ID", font=("Helvetica", 10))
+        gymLabel.grid(row=2, column=2, padx=5, pady=5)
+        gymEntry = ttk.Entry(inputBox)
+        gymEntry.grid(row=3, column=2, padx=5, pady=5)
+
+        button = ttk.Button(inputBox, text="ADD", command=lambda: self.editClass(id, nameEntry, typeEntry, durationEntry, capacityEntry, instructorEntry, gymEntry))
+        button.grid(row=3, column=3, padx=5, pady=5)
+
+        button = ttk.Button(inputBox, text="BACK TO CLASSES", command=lambda: self.loadMenuFrame())
+        button.grid(row=5, column=0, padx=5, pady=5)
 
     def loadDeleteFrame(self):
         self.clearFrame()
@@ -137,6 +260,43 @@ class ClassesFrame():
         button = ttk.Button(self.mainFrame, text="BACK TO CLASSES", command=lambda: self.loadMenuFrame())
         button.pack(padx=5)
 
+    def addClass(self, IdEntry, nameEntry, typeEntry, durationEntry, capacityEntry, instructorEntry, gymEntry):
+        id = IdEntry.get()
+        name = nameEntry.get()
+        type = typeEntry.get()
+        duration = durationEntry.get()
+        capacity = capacityEntry.get()
+        instructor = instructorEntry.get()
+        gym = gymEntry.get()
+
+        SQLAddClass = f"""
+        INSERT INTO class(classId, className, classType, duration, classCapacity, instructorId, gymID) VALUES('{id}', '{name}', '{type}', '{duration}', '{capacity}', '{instructor}', '{gym}');
+        """
+
+        cursor = self.conn.cursor()
+        cursor.execute(SQLAddClass)
+        self.conn.commit()
+        showinfo("Added", f"{name}")
+        self.loadReadFrame()
+
+    def editClass(self, id, nameEntry, typeEntry, durationEntry, capacityEntry, instructorEntry, gymEntry):
+        name = nameEntry.get()
+        type = typeEntry.get()
+        duration = durationEntry.get()
+        capacity = capacityEntry.get()
+        instructor = instructorEntry.get()
+        gym = gymEntry.get()
+
+        SQLAddClass = f"""
+        UPDATE class SET className = '{name}', classType = '{type}', duration = '{duration}', classCapacity = '{capacity}', instructorId = {instructor}, gymID = '{gym}' WHERE classId = '{id}';
+        """
+
+        cursor = self.conn.cursor()
+        cursor.execute(SQLAddClass)
+        self.conn.commit()
+        showinfo("Edited", f"{name}")
+        self.loadReadFrame()
+
     def delete(self, EntryId):
         id = EntryId.get()
         SQLDeleteClass = """
@@ -150,7 +310,7 @@ class ClassesFrame():
         self.conn.commit()
         cursor.execute(SQLDeleteAttends, (id,))
         self.conn.commit()
-
+        showinfo("Deleted", f"{id}")
         self.loadDeleteFrame()
 
     def getSQLData(self, sql):
