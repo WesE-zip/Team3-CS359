@@ -82,10 +82,10 @@ class App(tk.Tk):
             
        
     # Create SQLite connection
-    def createConnection(self):
+    def createConnection(self, dbName):
         self.connection = None
         try:
-            self.connection = sqlite3.connect(self.dbName)
+            self.connection = sqlite3.connect(dbName)
             print(f"Connection established with {sqlite3.sqlite_version}")
             cursor = self.connection.cursor()
             cursor.execute("PRAGMA foreign_key = ON")
