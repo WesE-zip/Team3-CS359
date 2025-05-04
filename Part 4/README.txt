@@ -1,4 +1,4 @@
-Christian - Questions 1, 2, 3, and 5. Also did createConnection and closeConnection methods.
+Christian - created MemberFrame.py, updateFrame.py, removeFrame.py, and Queries.py
 
 Wesley Evans - Questions 6, 8, and 9.
 
