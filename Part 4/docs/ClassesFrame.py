@@ -133,9 +133,7 @@ class ClassesFrame():
         gymEntry = ttk.Entry(inputBox)
         gymEntry.grid(row=3, column=2, padx=5, pady=5)
 
-        button = ttk.Button(inputBox, text="ADD",
-                            command=lambda: self.addClass(IdEntry, nameEntry, typeEntry, durationEntry, capacityEntry,
-                                                          instructorEntry, gymEntry))
+        button = ttk.Button(inputBox, text="ADD", command=lambda: self.addClass(IdEntry, nameEntry, typeEntry, durationEntry, capacityEntry, instructorEntry, gymEntry))
         button.grid(row=3, column=3, padx=5, pady=5)
 
         button = ttk.Button(inputBox, text="BACK TO CLASSES", command=lambda: self.loadMenuFrame())
@@ -182,9 +180,17 @@ class ClassesFrame():
     def loadUpdateFrame(self, IdEntry):
         id = IdEntry.get()
         self.clearFrame()
-        print(id)
         label = ttk.Label(self.mainFrame, text="UPDATE CLASS", font=("Helvetica", 12, "bold"))
         label.pack(padx=5, pady=15)
+
+        SQLRead = f"""
+        SELECT classId, className, classType, duration, classCapacity, instructorId, gymID FROM class WHERE classId = '{id}'
+        """ 
+        data = self.getSQLData(SQLRead)
+
+        classData = data.fetchone()
+
+        print(classData[1])
 
         infoFrame = ttk.Frame(self.mainFrame, width=550, height=600)
         infoFrame.pack(side=tk.LEFT, fill=tk.X, expand=True, anchor=tk.N)
@@ -201,35 +207,39 @@ class ClassesFrame():
         nameLabel.grid(row=0, column=1, padx=5, pady=5)
         nameEntry = ttk.Entry(inputBox)
         nameEntry.grid(row=1, column=1, padx=5, pady=5)
+        nameEntry.insert(0, f'{classData[1]}')
 
         typeLabel = tk.Label(inputBox, text="Class Type", font=("Helvetica", 10))
         typeLabel.grid(row=0, column=2, padx=5, pady=5)
         typeEntry = ttk.Entry(inputBox)
         typeEntry.grid(row=1, column=2, padx=5, pady=5)
+        typeEntry.insert(0, f'{classData[2]}')
 
         durationLabel = tk.Label(inputBox, text="Duration", font=("Helvetica", 10))
         durationLabel.grid(row=0, column=3, padx=5, pady=5)
         durationEntry = ttk.Entry(inputBox)
         durationEntry.grid(row=1, column=3, padx=5, pady=5)
+        durationEntry.insert(0, f'{classData[3]}')
 
         capacityLabel = tk.Label(inputBox, text="Class Capacity", font=("Helvetica", 10))
         capacityLabel.grid(row=2, column=0, padx=5, pady=5)
         capacityEntry = ttk.Entry(inputBox)
         capacityEntry.grid(row=3, column=0, padx=5, pady=5)
+        capacityEntry.insert(0, f'{classData[4]}')
 
         instructorLabel = tk.Label(inputBox, text="Instructor ID", font=("Helvetica", 10))
         instructorLabel.grid(row=2, column=1, padx=5, pady=5)
         instructorEntry = ttk.Entry(inputBox)
         instructorEntry.grid(row=3, column=1, padx=5, pady=5)
+        instructorEntry.insert(0, f'{classData[5]}')
 
         gymLabel = tk.Label(inputBox, text="Gym ID", font=("Helvetica", 10))
         gymLabel.grid(row=2, column=2, padx=5, pady=5)
         gymEntry = ttk.Entry(inputBox)
         gymEntry.grid(row=3, column=2, padx=5, pady=5)
+        gymEntry.insert(0, f'{classData[6]}')
 
-        button = ttk.Button(inputBox, text="ADD",
-                            command=lambda: self.editClass(id, nameEntry, typeEntry, durationEntry, capacityEntry,
-                                                           instructorEntry, gymEntry))
+        button = ttk.Button(inputBox, text="EDIT", command=lambda: self.editClass(id, nameEntry, typeEntry, durationEntry, capacityEntry, instructorEntry, gymEntry))
         button.grid(row=3, column=3, padx=5, pady=5)
 
         button = ttk.Button(inputBox, text="BACK TO CLASSES", command=lambda: self.loadMenuFrame())
