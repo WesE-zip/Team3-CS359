@@ -11,6 +11,7 @@ class RemoveFrame():
         self.query = Query(self.connection)
         self.mainBox = None
         self.idField = None
+        self.tableFrame = None
 
         self.showMenu()
     def showMenu(self):
@@ -47,11 +48,20 @@ class RemoveFrame():
         id = self.idField.get()
         data = self.query.searchByID(id)
         if data:
-            showLabel = tk.Label(self.mainBox, text="This is the member you've selected:")
-            showLabel.pack(side=tk.TOP, padx=10, pady=10)
+
+            if self.tableFrame:
+                self.tableFrame.destroy()
+                self.tableFrame = None
+                self.mainFrame.update()
 
             tableFrame = tk.Frame(self.mainBox)
             tableFrame.pack(side=tk.TOP)
+            self.tableFrame = tableFrame
+
+            showLabel = tk.Label(self.tableFrame, text="This is the member you've selected:")
+            showLabel.pack(side=tk.TOP, padx=10, pady=10)
+
+
             table = ttk.Treeview(tableFrame, columns=("ID", "Name", "Email", "Phone", "Address", "Age", "Start Date", "End Date"))
             table.column('#0', width=0, stretch=tk.NO)
             table.column('ID', anchor=tk.W, width=25)
@@ -76,10 +86,10 @@ class RemoveFrame():
             table.insert(parent="", index=0, values=data)
             table.pack(expand=True, fill=tk.BOTH)
 
-            confirmLabel = tk.Label(self.mainBox, text="Are you sure you want to remove this member?")
+            confirmLabel = tk.Label(self.tableFrame, text="Are you sure you want to remove this member?")
             confirmLabel.pack(side=tk.TOP, padx=10, pady=10)
 
-            confirmBox = tk.Frame(self.mainBox)
+            confirmBox = tk.Frame(self.tableFrame)
             confirmBox.pack(side=tk.TOP)
 
             yesButton = tk.Button(confirmBox, text="Yes", command=lambda: self.removeMember(id))
