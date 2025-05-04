@@ -6,6 +6,8 @@ from sqlite3 import Error
 from tkinter.messagebox import showinfo
 import tkinter as tk
 import tkinter.ttk as ttk
+from docs.Queries import Query
+
 
 class ClassesFrame():
 
@@ -15,6 +17,8 @@ class ClassesFrame():
         self.app = appObj
         self.sel_option = tk.StringVar(self.mainFrame)
         self.id = None
+        self.idField = None
+        self.query = Query(conn)
 
         self.loadMenuFrame()
 
@@ -22,25 +26,28 @@ class ClassesFrame():
     # Loads Menu Frame
     def loadMenuFrame(self):
         self.clearFrame()
-        
+
         label = ttk.Label(self.mainFrame, text="CLASSES", font=("Helvetica", 12, "bold"))
         label.pack(padx=5, pady=15)
-  
+
         button = ttk.Button(self.mainFrame, text="List classes", command=lambda: self.loadReadFrame())
         button.pack(fill=tk.X, padx=5, pady=5)
-        
+
         button = ttk.Button(self.mainFrame, text="Add new class", command=lambda: self.loadCreateFrame())
         button.pack(fill=tk.X, padx=5, pady=5)
-        
+
         button = ttk.Button(self.mainFrame, text="Update class information", command=lambda: self.loadUpdateIdFrame())
         button.pack(fill=tk.X, padx=5, pady=5)
-        
+
         button = ttk.Button(self.mainFrame, text="Delete class", command=lambda: self.loadDeleteFrame())
         button.pack(fill=tk.X, padx=5, pady=5)
 
+        findButton = ttk.Button(self.mainFrame, text="Find Member", command=lambda: self.findMember())
+        findButton.pack(fill=tk.X, padx=5, pady=5)
+
         button = ttk.Button(self.mainFrame, text="BACK TO MAIN", command=lambda: self.app.loadMenuFrame())
         button.pack(fill=tk.X, padx=5, pady=5)
-    
+
     def loadReadFrame(self):
         self.clearFrame()
 
@@ -50,10 +57,10 @@ class ClassesFrame():
         SQLget = """
         SELECT class.className, class.classType, class.duration, class.classCapacity, instructor.name, count(attends.classId) as attendees FROM class FULL JOIN instructor ON class.instructorId = instructor.instructorId FULL JOIN attends ON class.classId = attends.classId GROUP BY class.classId
         """
-        
+
         data = self.getSQLData(SQLget)
 
-        index = 0   
+        index = 0
         columns = ("type", "dururation", "cap", "instructor", "attendes")
 
         tree = ttk.Treeview(self.mainFrame, columns=columns)
@@ -73,8 +80,8 @@ class ClassesFrame():
         tree.heading('attendes', text='Number of Attendees')
 
         for index, line in enumerate(data):
-            tree.insert('', tk.END, iid = index, text = line[0], values = line[1:])
-            
+            tree.insert('', tk.END, iid=index, text=line[0], values=line[1:])
+
         button = ttk.Button(self.mainFrame, text="BACK TO CLASSES", command=lambda: self.loadMenuFrame())
         button.pack(padx=5)
 
@@ -125,7 +132,9 @@ class ClassesFrame():
         gymEntry = ttk.Entry(inputBox)
         gymEntry.grid(row=3, column=2, padx=5, pady=5)
 
-        button = ttk.Button(inputBox, text="ADD", command=lambda: self.addClass(IdEntry, nameEntry, typeEntry, durationEntry, capacityEntry, instructorEntry, gymEntry))
+        button = ttk.Button(inputBox, text="ADD",
+                            command=lambda: self.addClass(IdEntry, nameEntry, typeEntry, durationEntry, capacityEntry,
+                                                          instructorEntry, gymEntry))
         button.grid(row=3, column=3, padx=5, pady=5)
 
         button = ttk.Button(inputBox, text="BACK TO CLASSES", command=lambda: self.loadMenuFrame())
@@ -142,7 +151,7 @@ class ClassesFrame():
         """
         data = self.getSQLData(SQLRead)
 
-        index = 0   
+        index = 0
         columns = ('id')
 
         tree = ttk.Treeview(self.mainFrame, columns=columns)
@@ -154,12 +163,12 @@ class ClassesFrame():
         tree.heading('id', text='Class Id')
 
         for index, line in enumerate(data):
-            tree.insert('', tk.END, iid = index,
-                text = line[0], values = line[1:])        
+            tree.insert('', tk.END, iid=index,
+                        text=line[0], values=line[1:])
 
         label = ttk.Label(self.mainFrame, text="Class ID:")
         label.pack(fill=tk.X, padx=5, pady=5)
-        
+
         IdEntry = ttk.Entry(self.mainFrame)
         IdEntry.pack(fill=tk.X, padx=5)
 
@@ -217,7 +226,9 @@ class ClassesFrame():
         gymEntry = ttk.Entry(inputBox)
         gymEntry.grid(row=3, column=2, padx=5, pady=5)
 
-        button = ttk.Button(inputBox, text="ADD", command=lambda: self.editClass(id, nameEntry, typeEntry, durationEntry, capacityEntry, instructorEntry, gymEntry))
+        button = ttk.Button(inputBox, text="ADD",
+                            command=lambda: self.editClass(id, nameEntry, typeEntry, durationEntry, capacityEntry,
+                                                           instructorEntry, gymEntry))
         button.grid(row=3, column=3, padx=5, pady=5)
 
         button = ttk.Button(inputBox, text="BACK TO CLASSES", command=lambda: self.loadMenuFrame())
@@ -232,19 +243,20 @@ class ClassesFrame():
 
         label = ttk.Label(self.mainFrame, text="Class ID:")
         label.pack(fill=tk.X, padx=5, pady=5)
-        
+
         Entry = ttk.Entry(self.mainFrame)
         Entry.pack(fill=tk.X, padx=5)
 
         button = ttk.Button(self.mainFrame, text="DELETE", command=lambda: self.delete(Entry))
         button.pack(padx=5)
 
+
         SQLRead = """
         SELECT className, classId FROM class
         """
         data = self.getSQLData(SQLRead)
 
-        index = 0   
+        index = 0
         columns = ('id')
 
         tree = ttk.Treeview(self.mainFrame, columns=columns)
@@ -256,8 +268,8 @@ class ClassesFrame():
         tree.heading('id', text='Class Id')
 
         for index, line in enumerate(data):
-            tree.insert('', tk.END, iid = index,
-                text = line[0], values = line[1:])
+            tree.insert('', tk.END, iid=index,
+                        text=line[0], values=line[1:])
 
         button = ttk.Button(self.mainFrame, text="BACK TO CLASSES", command=lambda: self.loadMenuFrame())
         button.pack(padx=5)
@@ -319,8 +331,57 @@ class ClassesFrame():
         cursor = self.conn.cursor()
         cursor.execute(sql)
         return cursor
-        
+
     # Function to clear out all widgets inside a frame
     def clearFrame(self):
         for widget in self.mainFrame.winfo_children():
             widget.destroy()
+
+    def findMember(self):
+        self.clearFrame()
+
+        title = tk.Label(self.mainFrame, text="Find Members In A Class", font=("Helvetica", 14))
+        title.pack(side=tk.TOP)
+
+        backButton = ttk.Button(self.mainFrame, text="Back", command=lambda: self.mainFrame.loadMemberFrame())
+        backButton.pack(anchor=tk.NW, padx=10, pady=10)
+
+        mainBox = ttk.Frame(self.mainFrame)
+        mainBox.pack(side=tk.TOP)
+
+        label = tk.Label(mainBox, text="Enter class ID to find members:")
+        label.pack(side=tk.TOP)
+
+        idField = tk.Entry(mainBox)
+        idField.pack(side=tk.TOP)
+        self.idField = idField
+
+        submitButton = ttk.Button(mainBox, text="Submit", command=lambda: self.searchForClassID())
+        submitButton.pack(side=tk.TOP)
+
+    def searchForClassID(self):
+        id = self.idField.get()
+        check = self.query.searchByClassID(id)
+
+        if check:
+            data = self.query.getMembersByClass(id)
+            if data[0] == 1:
+                tableFrame = tk.Frame(self.mainFrame)
+                tableFrame.pack(side=tk.TOP)
+                table = ttk.Treeview(tableFrame, columns=("ID", "Name"))
+                table.column('#0', width=0, stretch=tk.NO)
+                table.column('ID', anchor=tk.W, width=25)
+                table.column('Name', anchor=tk.W, width=100)
+
+                table.heading("#0", text="")
+                table.heading("ID", text="ID")
+                table.heading("Name", text="Name")
+
+                memberData = data[1]
+                index = 0
+                for line in memberData:
+                    table.insert(parent="", index=index, values=line)
+                    index += 1
+                table.pack(expand=True, fill=tk.BOTH)
+            else:
+                showinfo("Error", "Unable to get member data")
