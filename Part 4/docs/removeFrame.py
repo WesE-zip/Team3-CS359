@@ -20,7 +20,7 @@ class RemoveFrame():
         title.pack(side=tk.TOP)
 
         backButton = ttk.Button(self.mainFrame, text="Back", command=lambda: self.memberFrame.loadMemberFrame())
-        backButton.pack(side=tk.TOP, anchor=tk.W, padx=10, pady=10)
+        backButton.pack(anchor=tk.NW, padx=10, pady=10)
 
         mainBox = ttk.Frame(self.mainFrame)
         mainBox.pack(side=tk.TOP)
