@@ -169,7 +169,7 @@ class Query():
             WHERE equipmentId = ?
             """
             cursor = self.connection.cursor()
-            cursor.execute(query, (equipID,))
+            cursor.execute(query, (equipId,))
 
             return True
 
