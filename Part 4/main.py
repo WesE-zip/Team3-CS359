@@ -1,14 +1,15 @@
 # Cruz Urbina
 
 import sys
+import os
 import tkinter as tk
 import tkinter.ttk as ttk
+import tkinter.messagebox as msgBox
 import sqlite3
 from sqlite3 import Error
 from docs import MemberFrame as mf
 from docs import ClassesFrame as cf
 from docs import EquipmentFrame as ef
-from tkinter.messagebox import showinfo
 
 
 class App(tk.Tk):
@@ -59,7 +60,7 @@ class App(tk.Tk):
         button = ttk.Button(self.mainFrame, text="EQUIPMENT", command=lambda: self.setFrame("EQUIPMENT"))
         button.pack(fill=tk.X, padx=5, pady=5)
         
-        button = ttk.Button(self.mainFrame, text="LOGOUT & EXIT", command=lambda: sys.exit())
+        button = ttk.Button(self.mainFrame, text="LOGOUT & EXIT", command=lambda: self.closeConnection())
         button.pack(fill=tk.X, padx=5, pady=5)
         
         
@@ -72,10 +73,10 @@ class App(tk.Tk):
     # Set current
     def setFrame(self, frame):
         if frame == "MEMBERS":
-            mf.MemberFrame(self.mainFrame, self.connection, self)
+            mf.MemberFrame(self, self.mainFrame, self.connection)
             
         if frame == "CLASSES":
-            cf.ClassesFrame(self.mainFrame, self.connection, self)
+            cf.ClassesFrame(self, self.mainFrame, self.connection)
             
         if frame == "EQUIPMENT":
             ef.EquipmentFrame(self, self.mainFrame, self.connection)
@@ -83,7 +84,11 @@ class App(tk.Tk):
        
     # Create SQLite connection
     def createConnection(self, dbName):
-        self.connection = None
+        dbName = dbName + ".sqlite"
+        dbPath = (os.getcwd() + "\\" + dbName)
+        if not os.path.isfile(dbPath):
+            return False
+    
         try:
             self.connection = sqlite3.connect(dbName)
             print(f"Connection established with {sqlite3.sqlite_version}")
@@ -101,11 +106,12 @@ class App(tk.Tk):
         if self.createConnection(dbName):
             self.loadMenuFrame()
         else:
-            showinfo("SQLite Connection", "Database not found.")
+            msgBox.showerror("SQLite Connection", "Database not found.")
 
     # Close SQLite connection
     def closeConnection(self):
         self.connection.close()
+        sys.exit()
 
 # Create App
 if __name__ == "__main__":
