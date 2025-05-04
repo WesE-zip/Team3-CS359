@@ -36,7 +36,7 @@ class MemberFrame():
         title.pack(side=tk.TOP)#This puts the label on the window at given location
 
         backButton = ttk.Button(self.mainFrame, text="Back", command=lambda: self.app.loadMenuFrame())
-        backButton.pack(side=tk.TOP, anchor=tk.W, padx=10, pady=10)#This puts the button in top left of window
+        backButton.pack(anchor=tk.NW, padx=10, pady=10)#This puts the button in top left of window
 
         infoFrame = ttk.Frame(self.mainFrame, width=550, height=600)
         infoFrame.pack(side=tk.LEFT, fill=tk.X, expand=True, anchor=tk.N)
