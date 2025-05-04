@@ -1,7 +1,8 @@
-#Christian Kurdi
+# Christian Kurdi
 import sqlite3
 from sqlite3 import Error
 import tkinter.messagebox as msgBox
+
 
 class Query():
     def __init__(self, connection):
@@ -27,7 +28,7 @@ class Query():
             cursor.execute(statement)
             returnCursor = cursor
         except Error as e:
-            return [0,e]
+            return [0, e]
         finally:
             return [1, returnCursor]
 
@@ -65,10 +66,8 @@ class Query():
         finally:
             return True
 
-
-            
     # -- EQUIPMENT QUIERIES --
-    
+
     # -- GET ALL EQUIPMENT ITEMS --
     def getAllEquip(self):
         print("GET ALL EQUIPMENT")
@@ -82,14 +81,14 @@ class Query():
             data = cursor.fetchall()
             self.connection.commit()
             return data
-        
+
         except Error as e:
             print(f"Error while creating data: {e}")
         return None
-    
+
     # -- CREATE EQUIPMENT  --
-    def createEquip(self, currEquip):    
-        print("="*95)
+    def createEquip(self, currEquip):
+        print("=" * 95)
         print("Create equip: " + currEquip["name"])
 
         try:
@@ -98,20 +97,20 @@ class Query():
             VALUES (?, ?, ?, ?)
             """
             cursor = self.connection.cursor()
-            cursor.execute(query, (currEquip["name"], 
-                                    currEquip["type"],
-                                    currEquip["quantity"], 
-                                    currEquip["gymId"]))
+            cursor.execute(query, (currEquip["name"],
+                                   currEquip["type"],
+                                   currEquip["quantity"],
+                                   currEquip["gymId"]))
             self.connection.commit()
             msgBox.showinfo("SQLite Connection", "SUCCESS: Equipment created.")
             return True
-        
+
         except Error as e:
             print(f"Error while creating data: {e}")
         return False
-    
+
     def getEquipByID(self, equipID):
-        print("="*95)
+        print("=" * 95)
         print("Get equipID: " + str(equipID))
 
         try:
@@ -130,15 +129,14 @@ class Query():
                 currEquip["quantity"] = line[3]
                 currEquip["gymId"] = line[4]
             return currEquip
-        
+
         except Error as e:
             print(f"Error while retrieving data: {e}")
             msgBox.showerror("SQLite Connection", "Error retrieving data.")
         return None
-        
-        
+
     def updateEquipByID(self, currEquip):
-        print("="*95)
+        print("=" * 95)
         print("Update equipment w/ equipID: " + str(currEquip["id"]))
 
         try:
@@ -149,20 +147,20 @@ class Query():
             """
             cursor = self.connection.cursor()
             cursor.execute(query, (currEquip["name"],
-                                    currEquip["type"],
-                                    currEquip["quantity"],
-                                    currEquip["gymId"],
-                                    currEquip["id"]))
+                                   currEquip["type"],
+                                   currEquip["quantity"],
+                                   currEquip["gymId"],
+                                   currEquip["id"]))
             self.connection.commit()
             return True
-        
+
         except Error as e:
             print(f"Error while retrieving data: {e}")
             msgBox.showerror("SQLite Connection", "Error retrieving data.")
         return False
-        
+
     def deleteEquipByID(self, equipId):
-        print("="*95)
+        print("=" * 95)
         print("Delete equipID: " + str(equipId))
 
         try:
@@ -172,12 +170,37 @@ class Query():
             """
             cursor = self.connection.cursor()
             cursor.execute(query, (equipID,))
-            
+
             return True
-        
+
         except Error as e:
             print(f"Error while retrieving data: {e}")
             msgBox.showerror("SQLite Connection", "Error deleting data.")
         return False
 
+    def searchByClassID(self, ID):
+        statement = f"SELECT * FROM class WHERE classId='{ID}';"
 
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute(statement)
+
+            cursor.close()
+        except Error as e:
+            return False
+        finally:
+            return True
+
+    def getMembersByClass(self, ID):
+        statement = f"SELECT DISTINCT member.memberID, member.name FROM member NATURAL JOIN attends WHERE attends.classId='{ID}'; "
+        data = None
+
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute(statement)
+            data = cursor.fetchall()
+            cursor.close()
+        except Error as e:
+            return [0, e]
+        finally:
+            return [1, data]
