@@ -1,3 +1,5 @@
+## Wesley Evans
+
 import sys
 import sqlite3
 from sqlite3 import Error
@@ -7,10 +9,10 @@ import tkinter.ttk as ttk
 
 class ClassesFrame():
 
-    def __init__(self, master, mainFrame, conn):
-        self.master = master
-        self.mainFrame = master
+    def __init__(self, mainFrame, conn, appObj):
+        self.mainFrame = mainFrame
         self.conn = conn
+        self.app = appObj
         self.sel_option = tk.StringVar(self.mainFrame)
         self.id = None
 
@@ -36,8 +38,8 @@ class ClassesFrame():
         button = ttk.Button(self.mainFrame, text="Delete class", command=lambda: self.loadDeleteFrame())
         button.pack(fill=tk.X, padx=5, pady=5)
 
-        #button = ttk.Button(self.mainFrame, text="BACK TO MAIN", command=lambda: App.loadMenuFrame(self))
-        #button.pack(fill=tk.X, padx=5, pady=5)
+        button = ttk.Button(self.mainFrame, text="BACK TO MAIN", command=lambda: self.app.loadMenuFrame())
+        button.pack(fill=tk.X, padx=5, pady=5)
     
     def loadReadFrame(self):
         self.clearFrame()
@@ -57,7 +59,7 @@ class ClassesFrame():
         tree = ttk.Treeview(self.mainFrame, columns=columns)
         tree.pack(padx=5, pady=5)
 
-        tree.column("#0", stretch=tk.NO, width=150)
+        tree.column("#0", stretch=tk.NO, width=120)
         tree.heading('#0', text='Class')
         tree.column("type", stretch=tk.NO, width=75)
         tree.heading('type', text='Type')
@@ -67,7 +69,7 @@ class ClassesFrame():
         tree.heading('cap', text='Capacity')
         tree.column("instructor", stretch=tk.NO, width=75)
         tree.heading('instructor', text='Instructor')
-        tree.column("attendes", stretch=tk.NO, width=130)
+        tree.column("attendes", stretch=tk.NO, width=140)
         tree.heading('attendes', text='Number of Attendees')
 
         for index, line in enumerate(data):
