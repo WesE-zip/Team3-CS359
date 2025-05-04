@@ -101,7 +101,6 @@ class App(tk.Tk):
         return True
         
     # Check connection
-    # TRUE: Load Menu Frame
     def checkConn(self, dbName):
         if self.createConnection(dbName):
             self.loadMenuFrame()

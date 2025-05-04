@@ -66,10 +66,13 @@ class Query():
         finally:
             return True
 
-    # -- EQUIPMENT QUIERIES --
 
+    # -- EQUIPMENT QUIERIES --
+    
     # -- GET ALL EQUIPMENT ITEMS --
+    # Returns a list of equipment data
     def getAllEquip(self):
+        print("="*65)
         print("GET ALL EQUIPMENT")
         try:
             query = """
@@ -81,15 +84,17 @@ class Query():
             data = cursor.fetchall()
             self.connection.commit()
             return data
-
+        
         except Error as e:
             print(f"Error while creating data: {e}")
         return None
-
+    
     # -- CREATE EQUIPMENT  --
+    # Executes query to create an equipment record
+    # Returns boolean confirmation
     def createEquip(self, currEquip):
-        print("=" * 95)
-        print("Create equip: " + currEquip["name"])
+        print("="*65)
+        print("CREATE EQUIP: " + currEquip["name"])
 
         try:
             query = """
@@ -97,26 +102,30 @@ class Query():
             VALUES (?, ?, ?, ?)
             """
             cursor = self.connection.cursor()
-            cursor.execute(query, (currEquip["name"],
-                                   currEquip["type"],
-                                   currEquip["quantity"],
-                                   currEquip["gymId"]))
+            cursor.execute(query, (currEquip["name"], 
+                                    currEquip["type"],
+                                    currEquip["quantity"], 
+                                    currEquip["gymId"]))
             self.connection.commit()
-            msgBox.showinfo("SQLite Connection", "SUCCESS: Equipment created.")
             return True
-
+        
         except Error as e:
             print(f"Error while creating data: {e}")
         return False
-
+    
+    # -- GET EQUIPMENT BY ID --
+    # Executes query to GET an equipment record
+    # Returns the equipment object as confirmation
     def getEquipByID(self, equipID):
-        print("=" * 95)
-        print("Get equipID: " + str(equipID))
+        print("="*65)
+        print("GET EQUIP BY ID: " + str(equipID))
 
         try:
             query = """
             SELECT * 
             FROM equipment
+            INNER JOIN gymFacility
+            ON equipment.gymId = gymFacility.gymId
             WHERE equipmentId = ?
             """
             cursor = self.connection.cursor()
@@ -127,17 +136,20 @@ class Query():
                 currEquip["name"] = line[1]
                 currEquip["type"] = line[2]
                 currEquip["quantity"] = line[3]
-                currEquip["gymId"] = line[4]
+                currEquip["gymLoc"] = line[6]
+            self.connection.commit()
             return currEquip
-
+        
         except Error as e:
             print(f"Error while retrieving data: {e}")
-            msgBox.showerror("SQLite Connection", "Error retrieving data.")
         return None
-
-    def updateEquipByID(self, currEquip):
-        print("=" * 95)
-        print("Update equipment w/ equipID: " + str(currEquip["id"]))
+        
+    # -- UPDATE EQUIPMENT BY ID --
+    # Executes query to UPDATE an equipment record
+    # Returns boolean confirmation
+    def updateEquipByID(self, equipId, currEquip):
+        print("="*65)
+        print("UPDATE EQUIP W/ ID: " + str(equipId))
 
         try:
             query = """
@@ -147,21 +159,23 @@ class Query():
             """
             cursor = self.connection.cursor()
             cursor.execute(query, (currEquip["name"],
-                                   currEquip["type"],
-                                   currEquip["quantity"],
-                                   currEquip["gymId"],
-                                   currEquip["id"]))
+                                    currEquip["type"],
+                                    currEquip["quantity"],
+                                    currEquip["gymId"],
+                                    currEquip["id"]))
             self.connection.commit()
             return True
-
+        
         except Error as e:
             print(f"Error while retrieving data: {e}")
-            msgBox.showerror("SQLite Connection", "Error retrieving data.")
         return False
-
+        
+    # -- DELETE EQUIPMENT BY ID --
+    # Executes query to DELETE an equipment record
+    # Returns boolean confirmation
     def deleteEquipByID(self, equipId):
-        print("=" * 95)
-        print("Delete equipID: " + str(equipId))
+        print("="*65)
+        print("DELETE EQUIP W/ ID: " + str(equipId))
 
         try:
             query = """
@@ -170,13 +184,57 @@ class Query():
             """
             cursor = self.connection.cursor()
             cursor.execute(query, (equipId,))
-
+            self.connection.commit()
+            
             return True
-
+        
         except Error as e:
             print(f"Error while retrieving data: {e}")
-            msgBox.showerror("SQLite Connection", "Error deleting data.")
         return False
+
+    # -- GET ALL GYMS --
+    # Returns a list of gymFacity data
+    def getAllGyms(self):
+        print("="*65)
+        print("GET ALL GYMS")
+        try:
+            query = """
+            SELECT *
+            FROM gymFacility
+            """
+            cursor = self.connection.cursor()
+            cursor.execute(query)
+            data = cursor.fetchall()
+            self.connection.commit()
+            return data
+        
+        except Error as e:
+            print(f"Error while creating data: {e}")
+        return None
+        
+    # -- GET GYM ID BY NAME --
+    # Executes query to GET an equipment record
+    # Returns the equipment object as confirmation
+    def getAllGymIdByLoc(self, gymLoc):
+        print("="*65)
+        print("GET ALL GYMS")
+        try:
+            query = """
+            SELECT *
+            FROM gymFacility
+            WHERE location = ?
+            """
+            gymId = None
+            cursor = self.connection.cursor()
+            cursor.execute(query, (gymLoc, ))
+            for line in cursor:
+                gymId = line[0]
+            self.connection.commit()
+            return gymId
+        
+        except Error as e:
+            print(f"Error while creating data: {e}")
+        return None
 
     def searchByClassID(self, ID):
         statement = f"SELECT * FROM class WHERE classId='{ID}';"
