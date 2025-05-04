@@ -1,6 +1,7 @@
 #Christian Kurdi
 import sqlite3
 from sqlite3 import Error
+import tkinter.messagebox as msgBox
 
 class Query():
     def __init__(self, connection):
@@ -65,5 +66,118 @@ class Query():
             return True
 
 
+            
+    # -- EQUIPMENT QUIERIES --
+    
+    # -- GET ALL EQUIPMENT ITEMS --
+    def getAllEquip(self):
+        print("GET ALL EQUIPMENT")
+        try:
+            query = """
+            SELECT *
+            FROM equipment
+            """
+            cursor = self.connection.cursor()
+            cursor.execute(query)
+            data = cursor.fetchall()
+            self.connection.commit()
+            return data
+        
+        except Error as e:
+            print(f"Error while creating data: {e}")
+        return None
+    
+    # -- CREATE EQUIPMENT  --
+    def createEquip(self, currEquip):    
+        print("="*95)
+        print("Create equip: " + currEquip["name"])
+
+        try:
+            query = """
+            INSERT INTO equipment (name, type, quantity, gymId)
+            VALUES (?, ?, ?, ?)
+            """
+            cursor = self.connection.cursor()
+            cursor.execute(query, (currEquip["name"], 
+                                    currEquip["type"],
+                                    currEquip["quantity"], 
+                                    currEquip["gymId"]))
+            self.connection.commit()
+            msgBox.showinfo("SQLite Connection", "SUCCESS: Equipment created.")
+            return True
+        
+        except Error as e:
+            print(f"Error while creating data: {e}")
+        return False
+    
+    def getEquipByID(self, equipID):
+        print("="*95)
+        print("Get equipID: " + str(equipID))
+
+        try:
+            query = """
+            SELECT * 
+            FROM equipment
+            WHERE equipmentId = ?
+            """
+            cursor = self.connection.cursor()
+            cursor.execute(query, (equipID,))
+            currEquip = {}
+            for line in cursor:
+                currEquip["id"] = line[0]
+                currEquip["name"] = line[1]
+                currEquip["type"] = line[2]
+                currEquip["quantity"] = line[3]
+                currEquip["gymId"] = line[4]
+            return currEquip
+        
+        except Error as e:
+            print(f"Error while retrieving data: {e}")
+            msgBox.showerror("SQLite Connection", "Error retrieving data.")
+        return None
+        
+        
+    def updateEquipByID(self, currEquip):
+        print("="*95)
+        print("Update equipment w/ equipID: " + str(currEquip["id"]))
+
+        try:
+            query = """
+            UPDATE equipment
+            SET name = ?, type = ?, quantity = ?, gymId = ?
+            WHERE equipmentId = ?
+            """
+            cursor = self.connection.cursor()
+            cursor.execute(query, (currEquip["name"],
+                                    currEquip["type"],
+                                    currEquip["quantity"],
+                                    currEquip["gymId"],
+                                    currEquip["id"]))
+            self.connection.commit()
+            return True
+        
+        except Error as e:
+            print(f"Error while retrieving data: {e}")
+            msgBox.showerror("SQLite Connection", "Error retrieving data.")
+        return False
+        
+    def deleteEquipByID(self, equipId):
+        print("="*95)
+        print("Delete equipID: " + str(equipId))
+
+        try:
+            query = """
+            DELETE FROM equipment
+            WHERE equipmentId = ?
+            """
+            cursor = self.connection.cursor()
+            cursor.execute(query, (equipID,))
+            
+            return True
+        
+        except Error as e:
+            print(f"Error while retrieving data: {e}")
+            msgBox.showerror("SQLite Connection", "Error deleting data.")
+        return False
 
 
