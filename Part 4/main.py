@@ -76,7 +76,7 @@ class App(tk.Tk):
             mf.MemberFrame(self, self.mainFrame, self.connection)
             
         if frame == "CLASSES":
-            cf.ClassesFrame(self, self.mainFrame, self.connection)
+            cf.ClassesFrame(self.mainFrame, self.connection, self)
             
         if frame == "EQUIPMENT":
             ef.EquipmentFrame(self, self.mainFrame, self.connection)
