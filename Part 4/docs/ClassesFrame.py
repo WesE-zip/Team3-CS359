@@ -19,6 +19,7 @@ class ClassesFrame():
         self.id = None
         self.idField = None
         self.query = Query(conn)
+        self.tableFrame = None
 
         self.loadMenuFrame()
 
@@ -343,7 +344,7 @@ class ClassesFrame():
         title = tk.Label(self.mainFrame, text="Find Members In A Class", font=("Helvetica", 14))
         title.pack(side=tk.TOP)
 
-        backButton = ttk.Button(self.mainFrame, text="Back", command=lambda: self.mainFrame.loadMemberFrame())
+        backButton = ttk.Button(self.mainFrame, text="Back", command=lambda: self.loadMenuFrame())
         backButton.pack(anchor=tk.NW, padx=10, pady=10)
 
         mainBox = ttk.Frame(self.mainFrame)
@@ -366,8 +367,14 @@ class ClassesFrame():
         if check:
             data = self.query.getMembersByClass(id)
             if data[0] == 1:
+                if self.tableFrame:
+                    self.tableFrame.destroy()
+                    self.tableFrame = None
+                    self.mainFrame.update()
+
                 tableFrame = tk.Frame(self.mainFrame)
                 tableFrame.pack(side=tk.TOP)
+                self.tableFrame = tableFrame
                 table = ttk.Treeview(tableFrame, columns=("ID", "Name"))
                 table.column('#0', width=0, stretch=tk.NO)
                 table.column('ID', anchor=tk.W, width=25)
