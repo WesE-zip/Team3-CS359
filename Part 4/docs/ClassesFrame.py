@@ -1,5 +1,6 @@
 import sys
-from main import App 
+import sqlite3
+from sqlite3 import Error
 import tkinter as tk
 import tkinter.ttk as ttk
 
@@ -42,15 +43,16 @@ class ClassesFrame():
         label = ttk.Label(self.mainFrame, text="CLASSES", font=("Helvetica", 12, "bold"))
         label.pack(padx=5, pady=15)
 
-        data = [
-           ["Bench Press", "STRENGTH", 6, 1, "bob", 3],
-           ["Treadmill", "CARDIO", 10, 3, "jim", 4],
-           ["Exercise Bike", "CARDIO", 4, 1, "gary", 5],
-           ["Crosstrainer", "STRENGTH", 8, 2, "bill", 4],
-        ]
+        SQLget = """
+        SELECT class.className, class.classType, class.duration, class.classCapacity, instructor.name, count(attends.classId) as attendees FROM class FULL JOIN instructor ON class.instructorId = instructor.instructorId FULL JOIN attends ON class.classId = attends.classId GROUP BY attends.classId
+        """
 
+        data = self.getSQLData(SQLget)
+
+        # for line in data:
+        #     print(line[0])
         index = 0   
-        columns = ("type", "dururation", "cap", "instructor", "attendees")
+        columns = ("type", "dururation", "cap", "instructor", "attendes")
 
         tree = ttk.Treeview(self.mainFrame, columns=columns)
         tree.pack(padx=5, pady=5)
@@ -65,12 +67,11 @@ class ClassesFrame():
         tree.heading('cap', text='Capacity')
         tree.column("instructor", stretch=tk.NO, width=75)
         tree.heading('instructor', text='Instructor')
-        tree.column("attendees", stretch=tk.NO, width=130)
-        tree.heading('attendees', text='Number of Attendees')
+        tree.column("attendes", stretch=tk.NO, width=130)
+        tree.heading('attendes', text='Number of Attendees')
 
         for index, line in enumerate(data):
-            tree.insert('', tk.END, iid = index,
-                text = line[0], values = line[1:])
+            tree.insert('', tk.END, iid = index, text = line[0], values = line[1:])
             
         button = ttk.Button(self.mainFrame, text="BACK TO CLASSES", command=lambda: self.loadMenuFrame())
         button.pack(padx=5)
@@ -80,15 +81,8 @@ class ClassesFrame():
 
         label = ttk.Label(self.mainFrame, text="ADD CLASS", font=("Helvetica", 12, "bold"))
         label.pack(padx=5, pady=15)
-        
-        label = ttk.Label(self.mainFrame, text="Database Name:")
-        label.pack(padx=5)
-        
-        entry = ttk.Entry(self.mainFrame)
-        entry.pack(padx=5)
-        
-        button = ttk.Button(self.mainFrame, text="CONNECT", command=lambda: App.checkConn(entry.get()))
-        button.pack(padx=5)
+
+
 
         button = ttk.Button(self.mainFrame, text="BACK TO CLASSES", command=lambda: self.loadMenuFrame())
         button.pack(padx=5)
@@ -99,22 +93,70 @@ class ClassesFrame():
         label = ttk.Label(self.mainFrame, text="UPDATE CLASS", font=("Helvetica", 12, "bold"))
         label.pack(padx=5, pady=15)
 
+        
 
         button = ttk.Button(self.mainFrame, text="BACK TO CLASSES", command=lambda: self.loadMenuFrame())
         button.pack(padx=5)
 
     def loadDeleteFrame(self):
         self.clearFrame()
+        classId = 7
 
         label = ttk.Label(self.mainFrame, text="DELETE CLASS", font=("Helvetica", 12, "bold"))
         label.pack(padx=5, pady=15)
 
+        label = ttk.Label(self.mainFrame, text="Class ID:")
+        label.pack(fill=tk.X, padx=5, pady=5)
+        
+        Entry = ttk.Entry(self.mainFrame)
+        Entry.pack(fill=tk.X, padx=5)
+
+        button = ttk.Button(self.mainFrame, text="DELETE", command=lambda: self.delete(Entry))
+        button.pack(padx=5)
+
+        SQLRead = """
+        SELECT className, classId FROM class
+        """
+        data = self.getSQLData(SQLRead)
+
+        index = 0   
+        columns = ('id')
+
+        tree = ttk.Treeview(self.mainFrame, columns=columns)
+        tree.pack(padx=5, pady=5)
+
+        tree.column("#0", stretch=tk.NO, width=150)
+        tree.heading('#0', text='Classes')
+        tree.column("id", stretch=tk.NO, width=50)
+        tree.heading('id', text='Class Id')
+
+        for index, line in enumerate(data):
+            tree.insert('', tk.END, iid = index,
+                text = line[0], values = line[1:])
 
         button = ttk.Button(self.mainFrame, text="BACK TO CLASSES", command=lambda: self.loadMenuFrame())
         button.pack(padx=5)
-        
-    
-        
+
+    def delete(self, EntryId):
+        id = EntryId.get()
+        SQLDeleteClass = """
+        DELETE FROM class WHERE classId = ?
+        """
+        SQLDeleteAttends = """
+        DELETE FROM attends WHERE classId = ?
+        """
+        cursor = self.conn.cursor()
+        cursor.execute(SQLDeleteClass, (id,))
+        self.conn.commit()
+        cursor.execute(SQLDeleteAttends, (id,))
+        self.conn.commit()
+
+        self.loadDeleteFrame()
+
+    def getSQLData(self, sql):
+        cursor = self.conn.cursor()
+        cursor.execute(sql)
+        return cursor
         
     # Function to clear out all widgets inside a frame
     def clearFrame(self):
