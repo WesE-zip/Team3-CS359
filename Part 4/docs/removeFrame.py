@@ -14,7 +14,7 @@ class RemoveFrame():
         self.tableFrame = None
 
         self.showMenu()
-    def showMenu(self):
+    def showMenu(self):#Function to display window
         self.clearFrame()
 
         title = tk.Label(self.mainFrame, text="Remove A Member", font=("Helvetica", 14))
@@ -40,11 +40,11 @@ class RemoveFrame():
 
 
 
-    def clearFrame(self):
+    def clearFrame(self): #Function to clear widgets in current window
         for widget in self.mainFrame.winfo_children():
             widget.destroy()
 
-    def searchForID(self):
+    def searchForID(self):#Function to search for a member by ID
         id = self.idField.get()
         data = self.query.searchByID(id)
         if data:
@@ -99,7 +99,7 @@ class RemoveFrame():
             noButton.pack(side=tk.RIGHT, padx=10, pady=10)
         else:
             showinfo("Error", "Member not found")
-    def removeMember(self, memberID):
+    def removeMember(self, memberID): #Function to remove member
         check = self.query.removeMember(memberID)
         if check:
             showinfo("Success", "Member removed")
