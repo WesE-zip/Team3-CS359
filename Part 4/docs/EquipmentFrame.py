@@ -14,6 +14,7 @@ class EquipmentFrame():
         self.mainFrame = mainFrame
         self.db = db.Query(conn)
         self.sel_option = tk.StringVar()
+        self.idVar = tk.StringVar()
         
         self.currEquip = {}
         self.allEquip = {}
@@ -37,6 +38,7 @@ class EquipmentFrame():
             return
         
         self.clearFrame()
+        self.idVar.set("")
                 
         # EQUIPMENT TITLE
         label = ttk.Label(self.mainFrame, text="EQUIPMENT", font=("Helvetica", 12, "bold"))
@@ -69,7 +71,18 @@ class EquipmentFrame():
                 text = line[0], values = line[1:])
             
         # SET TREE BINDING: loadEquipmentFrame
-        self.tree.bind("<Double-1>", self.loadEquipmentFrame)
+        # self.tree.bind("<Double-1>", self.loadEquipmentFrame)
+
+        # ID EDIT ENTRY
+        idLabel = ttk.Label(self.mainFrame, text="ID: ")
+        idLabel.pack(fill=tk.X, padx=5, pady=5)
+
+        idEntry = ttk.Entry(self.mainFrame, textvariable=self.idVar)
+        idEntry.pack(fill=tk.X, padx=5, pady=10)
+        
+        # EDIT EQUIPMENT BUTTON
+        editEquipButton = ttk.Button(self.mainFrame, text="EDIT EQUIPMENT(+)", command=lambda: self.loadEquipmentFrame())
+        editEquipButton.pack(fill=tk.X, padx=5, pady=10)
         
         # NEW EQUIPMENT BUTTON
         newEquipButton = ttk.Button(self.mainFrame, text="NEW EQUIPMENT(+)", command=lambda: self.loadCreateFrame())
@@ -148,7 +161,7 @@ class EquipmentFrame():
     # Executes getAllGyms: Gets all the gyms location data.
     # Displays Equipment Informations
     # (Name, Type, Quantity, Gym) 
-    def loadEquipmentFrame(self, event):   
+    def loadEquipmentFrame(self):   
         # Executes getEquipment: Gets all the equipment location data.    
         self.currEquip = self.getEquipment()
         
@@ -162,12 +175,14 @@ class EquipmentFrame():
                 
         self.clearFrame()
                         
+        self.idVar = tk.StringVar()
         self.nameVar = tk.StringVar()
         self.quantityVar = tk.StringVar()
         self.typeOption = tk.StringVar()
         self.gymOption = tk.StringVar()
         
         # Assign currEquip Data to Inputs
+        self.idVar.set(str(self.currEquip["id"]))
         self.nameVar.set(self.currEquip["name"])
         self.quantityVar.set(str(self.currEquip["quantity"]))
         self.typeOption.set(self.currEquip["type"])
@@ -176,6 +191,14 @@ class EquipmentFrame():
         # EQUIPMENT TITLE
         equipLabel = ttk.Label(self.mainFrame, text="EQUIPMENT", font=("Helvetica", 12, "bold"))
         equipLabel.pack(padx=5, pady=20)
+        
+        # ID INPUT
+        idLabel = ttk.Label(self.mainFrame, text="ID:")
+        idLabel.pack(fill=tk.X, padx=5, pady=5)
+        
+        self.idEntry = ttk.Entry(self.mainFrame, textvariable=self.idVar)
+        self.idEntry.pack(fill=tk.X, padx=5)
+        self.idEntry.config(state="disabled")
         
         # NAME INPUT
         nameLabel = ttk.Label(self.mainFrame, text="NAME:")
@@ -366,9 +389,9 @@ class EquipmentFrame():
     def getEquipment(self):
         currEquip = None
         try:
-            item = self.tree.selection()[0]
-            print(str(item))
-            equipId = self.tree.item(item, "text")
+            # item = self.tree.selection()[0]
+            # print(str(item))
+            equipId = self.idVar.get()
             currEquip = self.db.getEquipByID(equipId)
         except IndexError as e:
             print(f"Error: {e}")
