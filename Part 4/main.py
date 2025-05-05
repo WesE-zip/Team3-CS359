@@ -18,7 +18,7 @@ class App(tk.Tk):
         super().__init__()
         
         self.title("DB Manager")
-        self.geometry("600x420")
+        self.geometry("840x600")
         self.resizable(False, False)
         
         self.mainFrame = ttk.Frame(self)
@@ -74,7 +74,7 @@ class App(tk.Tk):
     # Set current
     def setFrame(self, frame):
         if frame == "MEMBERS":
-            mf.MemberFrame(self, self.mainFrame, self.connection)
+            mf.MemberFrame(self.mainFrame, self.connection, self)
             
         if frame == "CLASSES":
             cf.ClassesFrame(self.mainFrame, self.connection, self)
