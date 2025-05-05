@@ -266,3 +266,20 @@ class Query():
             return [0, e]
         finally:
             return [1, data]
+
+    def getIDs(self):
+        statement = "SELECT memberId FROM member"
+        data =[]
+        cursor = None
+
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute(statement)
+            for line in cursor:
+                data.append(line[0])
+
+            cursor.close()
+        except Error as e:
+            return None
+        finally:
+            return data
