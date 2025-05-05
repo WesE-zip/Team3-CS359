@@ -5,6 +5,7 @@ from tkinter.messagebox import showinfo
 from docs.Queries import Query
 from docs.removeFrame import RemoveFrame
 from docs.updateFrame import UpdateFrame
+#XYZGym.sqlite
 
 class MemberFrame():
 
@@ -28,7 +29,7 @@ class MemberFrame():
         self.loadMemberFrame()
 
 
-    def loadMemberFrame(self):
+    def loadMemberFrame(self):#Function to display the window
         self.clearFrame()
 
         title = ttk.Label(self.mainFrame, text="Members Menu", font=("Helvetica", 14))
@@ -142,10 +143,10 @@ class MemberFrame():
             showinfo("Error", "Please enter all fields.")
 
 
-    def updateMember(self):
+    def updateMember(self):#Function to call updateFrame
         UpdateFrame(self, self.mainFrame, self.connection)
 
-    def removeMember(self):
+    def removeMember(self):#Function to call removeFrame
         RemoveFrame(self, self.mainFrame, self.connection)
 
     def clearEntries(self): #Function to clear entry fields
@@ -158,7 +159,7 @@ class MemberFrame():
         self.startDateField.delete(0, tk.END)
         self.endDateField.delete(0, tk.END)
 
-    def createTable(self):
+    def createTable(self):#Function to create a table for members
 
         if self.table:
             self.table.destroy()
