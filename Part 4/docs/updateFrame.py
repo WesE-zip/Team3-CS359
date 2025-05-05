@@ -20,7 +20,7 @@ class UpdateFrame():
         self.endDateField = None
 
         self.showMenu()
-    def showMenu(self):
+    def showMenu(self):#Function to display the window
         self.clearFrame()
 
         title = tk.Label(self.mainFrame, text="Update A Member", font=("Helvetica", 14))
@@ -43,11 +43,11 @@ class UpdateFrame():
         submitButton = ttk.Button(mainBox, text="Submit", command=lambda: self.searchForID())
         submitButton.pack(side=tk.TOP)
 
-    def clearFrame(self):
+    def clearFrame(self):#Function to clear widgets in window
         for widget in self.mainFrame.winfo_children():
             widget.destroy()
 
-    def searchForID(self):
+    def searchForID(self):#Function to seach for a member by ID
         id = self.idField.get()
         data = self.query.searchByID(id)
         if data:
@@ -62,7 +62,7 @@ class UpdateFrame():
 
 
 
-    def updateFrame(self, id, data):
+    def updateFrame(self, id, data):#Function to update the window with new widgets
         id = id
         data = data
         memberID, name, email, phone, address, age, startDate, endDate = data
@@ -121,7 +121,7 @@ class UpdateFrame():
 
 
 
-    def submitUpdate(self, id):
+    def submitUpdate(self, id):#Function to update in DB
         id = id
         self.name = self.nameField.get()
         self.email = self.emailField.get()
