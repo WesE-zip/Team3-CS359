@@ -40,7 +40,7 @@ class EquipmentFrame():
                 
         # EQUIPMENT TITLE
         label = ttk.Label(self.mainFrame, text="EQUIPMENT", font=("Helvetica", 12, "bold"))
-        label.pack(padx=5, pady=15)
+        label.pack(padx=5, pady=20)
         
         index = 0   
         columns = ("name", "type", "quantity", "gym")
@@ -105,7 +105,7 @@ class EquipmentFrame():
         
         # EQUIPMENT TITLE
         equipLabel = ttk.Label(self.mainFrame, text="CREATE EQUIPMENT", font=("Helvetica", 12, "bold"))
-        equipLabel.pack(padx=5, pady=15)
+        equipLabel.pack(padx=5, pady=20)
         
         # NAME INPUT
         nameLabel = ttk.Label(self.mainFrame, text="NAME:")
@@ -175,7 +175,7 @@ class EquipmentFrame():
         
         # EQUIPMENT TITLE
         equipLabel = ttk.Label(self.mainFrame, text="EQUIPMENT", font=("Helvetica", 12, "bold"))
-        equipLabel.pack(padx=5, pady=15)
+        equipLabel.pack(padx=5, pady=20)
         
         # NAME INPUT
         nameLabel = ttk.Label(self.mainFrame, text="NAME:")
@@ -267,7 +267,7 @@ class EquipmentFrame():
         # Assign currEquip Data to Inputs
         self.nameVar.set(self.currEquip["name"])
         self.quantityVar.set(str(self.currEquip["quantity"]))
-        self.typeOption.set(self.currEquip["type"].upper())
+        self.typeOption.set(self.currEquip["type"])
         self.gymOption.set(self.currEquip["gymLoc"])
     
         # Destroy Delete Button
@@ -292,7 +292,7 @@ class EquipmentFrame():
         self.gymDropdown.config(state="disabled")
         
         
-    # --- FRAMA MANAGER FUNCTIONS ---
+    # --- FRAME MANAGER FUNCTIONS ---
         
     # Function to clear out all widgets inside a frame
     def clearFrame(self):
@@ -353,7 +353,6 @@ class EquipmentFrame():
             for gym in allGyms:
                 gymsLoc.append(gym[1])
                 i = i + 1
-        
         else:
             msgBox.showerror("SQLite Connection", "ERROR: Failed to create equipment.")
         
@@ -376,10 +375,11 @@ class EquipmentFrame():
         
         return currEquip
         
-    # --- GET EQUIPMENT BY ID ---
-    # Executes getEquipByID: Gets equipment data.
-    # ERROR: If currEquip is None.
-    # Returns: Equipment
+    # --- CREATE EQUIPMENT ---
+    # Executes db.createEquip: Create equipment data.
+    # ERROR: If currEquip["name"] is None.
+    # ERROR: If currEquip["quantity"] is not decimal.
+    # ERROR: If currEquip["quantity"]) is less than 0.
     def createEquipment(self):
         self.currEquip["name"] = self.nameVar.get() 
         self.currEquip["type"] = self.typeOption.get()
@@ -403,11 +403,11 @@ class EquipmentFrame():
         msgBox.showinfo("SQLite Connection", "SUCCESS: Equipment created.")
         self.loadAllEquipmentFrame()
         
-    # --- UPDATE EQUIPMENT BY ID ---
-    # Executes updateEquipByID: Updates equipment data.
+    # --- UPDATE EQUIPMENT ---
+    # Executes db.updateEquipByID: Update equipment data.
     # ERROR: If currEquip["name"] is None.
-    # ERROR: If updateEquipByID fails.
-    # Executes loadAllEquipmentFrame
+    # ERROR: If currEquip["quantity"] is not decimal.
+    # ERROR: If currEquip["quantity"]) is less than 0.
     def updateEquipment(self):
         self.currEquip["name"] = self.nameVar.get() 
         self.currEquip["type"] = self.typeOption.get()
@@ -431,16 +431,16 @@ class EquipmentFrame():
         msgBox.showinfo("SQLite Connection", "SUCCESS: Equipment updated.")
         self.loadAllEquipmentFrame() 
         
-    # --- DELETE EQUIPMENT BY ID ---
+    # --- DELETE EQUIPMENT ---
     # Executes deleteEquipByID: Delete equipment data.
     # ERROR: If deleteEquipByID fails.
     # Executes loadAllEquipmentFrame
     def deleteEquipment(self):        
-        if not self.db.deleteEquipByID(self.currEquip["id"]):
-            msgBox.showerror("SQLite Connection", "Error deleting data.")
+        if self.db.deleteEquipByID(self.currEquip["id"]):
+            msgBox.showinfo("SQLite Connection", "SUCCESS: Equipment deleted.")
+            self.loadAllEquipmentFrame()
             return
+        msgBox.showerror("SQLite Connection", "Error deleting data.")
         
-        msgBox.showinfo("SQLite Connection", "SUCCESS: Equipment deleted.")
-        self.loadAllEquipmentFrame() 
                
      

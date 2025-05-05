@@ -18,7 +18,8 @@ class App(tk.Tk):
         super().__init__()
         
         self.title("DB Manager")
-        self.geometry("600x400")
+        self.geometry("600x420")
+        self.resizable(False, False)
         
         self.mainFrame = ttk.Frame(self)
         self.mainFrame.pack(padx=10, expand=True, fill=tk.Y)
@@ -31,16 +32,16 @@ class App(tk.Tk):
     # Loads Connection Frame    
     def loadConnFrame(self):
         label = ttk.Label(self.mainFrame, text="DATABASE", font=("Helvetica", 12, "bold"))
-        label.pack(padx=5, pady=15)
+        label.pack(pady=35)
         
         label = ttk.Label(self.mainFrame, text="ENTER DATABASE NAME:")
-        label.pack(fill=tk.X, padx=5, pady=5)
+        label.pack(fill=tk.X, pady=5)
         
         entry = ttk.Entry(self.mainFrame)
-        entry.pack(fill=tk.X, padx=5, pady=5)
+        entry.pack(fill=tk.X, pady=5)
         
         button = ttk.Button(self.mainFrame, text="CONNECT", command=lambda: self.checkConn(entry.get()))
-        button.pack(fill=tk.X, padx=5, pady=10)
+        button.pack(fill=tk.X, pady=10)
         
     
     # Clears Frame
@@ -49,19 +50,19 @@ class App(tk.Tk):
         self.clearFrame()
         
         label = ttk.Label(self.mainFrame, text="MAIN MENU", font=("Helvetica", 12, "bold"))
-        label.pack(padx=5, pady=15)
+        label.pack(pady=35)
   
         button = ttk.Button(self.mainFrame, text="MEMBERS", command=lambda: self.setFrame("MEMBERS"))
-        button.pack(fill=tk.X, padx=5, pady=5)
+        button.pack(fill=tk.X, pady=5)
         
         button = ttk.Button(self.mainFrame, text="CLASSES", command=lambda: self.setFrame("CLASSES"))
-        button.pack(fill=tk.X, padx=5, pady=5)
+        button.pack(fill=tk.X, pady=5)
         
         button = ttk.Button(self.mainFrame, text="EQUIPMENT", command=lambda: self.setFrame("EQUIPMENT"))
-        button.pack(fill=tk.X, padx=5, pady=5)
+        button.pack(fill=tk.X, pady=5)
         
         button = ttk.Button(self.mainFrame, text="LOGOUT & EXIT", command=lambda: self.closeConnection())
-        button.pack(fill=tk.X, padx=5, pady=5)
+        button.pack(fill=tk.X, pady=5)
         
         
     # Function to clear out all widgets inside a frame
@@ -85,6 +86,7 @@ class App(tk.Tk):
     # Create SQLite connection
     def createConnection(self, dbName):
         dbName = dbName + ".sqlite"
+        # dbName = "XYZGym.sqlite"
         dbPath = (os.getcwd() + "\\" + dbName)
         if not os.path.isfile(dbPath):
             return False
@@ -101,6 +103,7 @@ class App(tk.Tk):
         return True
         
     # Check connection
+    # TRUE: Load Menu Frame
     def checkConn(self, dbName):
         if self.createConnection(dbName):
             self.loadMenuFrame()
