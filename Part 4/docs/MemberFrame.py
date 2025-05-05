@@ -5,7 +5,6 @@ from tkinter.messagebox import showinfo
 from docs.Queries import Query
 from docs.removeFrame import RemoveFrame
 from docs.updateFrame import UpdateFrame
-#XYZGym.sqlite
 
 class MemberFrame():
 
@@ -131,13 +130,24 @@ class MemberFrame():
 
             if goodID:
                 if int(age) > 14:
+                    year1 = int(startDate[:4])
+                    month1 = int(startDate[5:7])
+                    day1 = int(startDate[8:10])
+                    year2 = int(endDate[:4])
+                    month2 = int(endDate[5:7])
+                    day2 = int(endDate[8:10])
 
-                    check = self.query.addMember(int(id), name, email, phone, address, int(age), startDate, endDate)
-                    if check:
-                        showinfo("Success", "Member added")
-                        self.createTable()
+                    if year2>year1 or year2==year1 and month2>month1 or month2==month1 and day2>day1:
+
+
+                        check = self.query.addMember(int(id), name, email, phone, address, int(age), startDate, endDate)
+                        if check:
+                            showinfo("Success", "Member added")
+                            self.createTable()
+                        else:
+                            showinfo("Error", "Unable to add record, try again")
                     else:
-                        showinfo("Error", "Unable to add record, try again.")
+                        showinfo("Error", "End date must be greater than start date")
                 else:
                     showinfo("Error", "Member cannot be younger than 15.")
             else:
