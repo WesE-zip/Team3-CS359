@@ -5,7 +5,6 @@ from tkinter.messagebox import showinfo
 from docs.Queries import Query
 from docs.removeFrame import RemoveFrame
 from docs.updateFrame import UpdateFrame
-#XYZGym.sqlite
 
 class MemberFrame():
 
@@ -119,13 +118,26 @@ class MemberFrame():
         endDate = self.endDateField.get()
 
         if email and startDate and endDate:
+            checkID = self.query.getIDs()
+            goodID = True
 
-            check = self.query.addMember(int(id), name, email, phone, address, int(age), startDate, endDate)
-            if check:
-                showinfo("Success", "Member added")
-                self.createTable()
+            if checkID:
+
+                for member in checkID:
+                    if member == int(id):
+                        goodID = False
+                        break
+
+            if goodID:
+
+                check = self.query.addMember(int(id), name, email, phone, address, int(age), startDate, endDate)
+                if check:
+                    showinfo("Success", "Member added")
+                    self.createTable()
+                else:
+                    showinfo("Error", "Unable to add record, try again.")
             else:
-                showinfo("Error", "Unable to add record, try again.")
+                showinfo("Error", "Choose an ID not in database")
         else:
             showinfo("Error", "Please enter all fields.")
 
