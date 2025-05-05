@@ -130,13 +130,16 @@ class MemberFrame():
                         break
 
             if goodID:
+                if int(age) > 14:
 
-                check = self.query.addMember(int(id), name, email, phone, address, int(age), startDate, endDate)
-                if check:
-                    showinfo("Success", "Member added")
-                    self.createTable()
+                    check = self.query.addMember(int(id), name, email, phone, address, int(age), startDate, endDate)
+                    if check:
+                        showinfo("Success", "Member added")
+                        self.createTable()
+                    else:
+                        showinfo("Error", "Unable to add record, try again.")
                 else:
-                    showinfo("Error", "Unable to add record, try again.")
+                    showinfo("Error", "Member cannot be younger than 15.")
             else:
                 showinfo("Error", "Choose an ID not in database")
         else:
