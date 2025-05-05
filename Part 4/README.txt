@@ -5,4 +5,15 @@ Wesley Evans - Leader for part 4
 	- debugged main.py
 
 Cruz Urbina
-
+	- ConnView - Tkinter
+	- MainMenuView - Tkinter
+	- AllEquipmentView - Tkinter
+	- EquipmentView - Tkinter
+	- EquipmentViewEdit - Tkinter
+	- Create - Equipment - Queries
+	- Read - Equipment - Queries
+	- Update - Equipment - Queries
+	- Delete - Equipment - Queries
+	- ViewAll - Equipment - Queries
+	- ViewAll - Gyms - Queries
+	- GetIDByLoc - Gyms - Queries
