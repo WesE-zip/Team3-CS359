@@ -9,6 +9,7 @@ class Query():
         self.connection = connection
 
     def addMember(self, id, name, email, phone, address, age, startDate, endDate):
+        #Function to add member to DB
         statement = f"INSERT INTO member(memberId, name, email, phone, address, age, membershipStartDate, membershipEndDate) VALUES({id}, '{name}', '{email}', '{phone}', '{address}', {age}, '{startDate}', '{endDate}');"
         try:
             cursor = self.connection.cursor()
@@ -20,7 +21,7 @@ class Query():
         finally:
             return True
 
-    def getMembers(self):
+    def getMembers(self):#Function to get members from DB
         returnCursor = None
         try:
             statement = "SELECT * FROM member"
@@ -32,7 +33,7 @@ class Query():
         finally:
             return [1, returnCursor]
 
-    def searchByID(self, ID):
+    def searchByID(self, ID): #Function to search DB for a member
         statement = f"SELECT * FROM member WHERE memberId='{ID}';"
 
         cursor = self.connection.cursor()
@@ -42,7 +43,7 @@ class Query():
         cursor.close()
         return data
 
-    def removeMember(self, ID):
+    def removeMember(self, ID):#Function to remove a member from DB
         statement1 = f"DELETE FROM member WHERE memberId='{ID}';"
         statement2 = f"DELETE FROM attends WHERE memberId='{ID}';"
         statement3 = f"DELETE FROM payment WHERE memberId='{ID}';"
@@ -60,6 +61,7 @@ class Query():
             return True
 
     def updateMember(self, id, name, email, phone, address, age, startDate, endDate):
+        #Function to update member data in DB
         statement = f"UPDATE member SET name = '{name}', email = '{email}', phone = '{phone}', address = '{address}', age = {age}, membershipStartDate = '{startDate}', membershipEndDate = '{endDate}' WHERE memberId = '{id}';"
         try:
             cursor = self.connection.cursor()
@@ -240,7 +242,7 @@ class Query():
             print(f"Error while creating data: {e}")
         return None
 
-    def searchByClassID(self, ID):
+    def searchByClassID(self, ID):#Function to search for classes by ID
         statement = f"SELECT * FROM class WHERE classId='{ID}';"
 
         try:
@@ -253,7 +255,7 @@ class Query():
         finally:
             return True
 
-    def getMembersByClass(self, ID):
+    def getMembersByClass(self, ID):#Function to get members in a class from DB
         statement = f"SELECT DISTINCT member.memberID, member.name FROM member NATURAL JOIN attends WHERE attends.classId='{ID}'; "
         data = None
 
@@ -267,7 +269,7 @@ class Query():
         finally:
             return [1, data]
 
-    def getIDs(self):
+    def getIDs(self):#Function to get current member IDs
         statement = "SELECT memberId FROM member"
         data =[]
         cursor = None
