@@ -1,4 +1,4 @@
-Christian - created MemberFrame.py, updateFrame.py, removeFrame.py, Queries.py, and added Find Members in class menu
+Christian - created MemberFrame.py, updateFrame.py, removeFrame.py, Queries.py, added Find Members in class menu, and Execution.pdf
 
 Wesley Evans - Leader for part 4 
 	- created ClassesFrame.py
